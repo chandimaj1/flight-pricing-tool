@@ -220,21 +220,26 @@ class flightBook
         //echo($post_slug);
         if ( $post_slug=="flightbook" ){
         //Bootstrap
-         wp_enqueue_script( 'bootstrap_bundle_scripts', plugins_url('assets/bootstrap4/bootstrap.bundle.min.js',__FILE__), array('jquery'));
-         wp_enqueue_script( 'bootstrap_input_spinner', plugins_url('assets/bootstrap4/bootstrap-input-spinner.js',__FILE__), array('bootstrap_bundle_scripts'));
+        wp_enqueue_style( 'bootstrap4_css', plugins_url('/assets/bootstrap4/bootstrap_4_5_2_min.css',__FILE__),80);
+         wp_enqueue_script( 'bootstrap_bundle_scripts', plugins_url('/assets/bootstrap4/bootstrap.bundle.min.js',__FILE__), array('jquery'));
+         wp_enqueue_script( 'bootstrap_input_spinner', plugins_url('/assets/bootstrap4/bootstrap-input-spinner.js',__FILE__), array('bootstrap_bundle_scripts'));
          //FLatpicker
-         wp_enqueue_script( 'flatpickr', plugins_url('assets/flatpicker/flatpickr.js',__FILE__), array('bootstrap_input_spinner'));
+         wp_enqueue_style( 'flatpickr_styles', plugins_url('/assets/flatpicker/flatpickr.min.css',__FILE__),81);
+         wp_enqueue_script( 'flatpickr_scripts', plugins_url('/assets/flatpicker/flatpickr.js',__FILE__), array('jquery'));
          //jQuery Autocomplete
-         wp_enqueue_script( 'jquery_autocomplete', plugins_url('assets/jquery_autocomplete/jquery.autocomplete.min.js',__FILE__), array('jquery'));
+         wp_enqueue_script( 'jquery_autocomplete', plugins_url('/assets/jquery_autocomplete/jquery.autocomplete.min.js',__FILE__), array('jquery'));
          //Font-Awesome
          wp_enqueue_style( 'fontawesome_css', plugins_url('/assets/font_awesome/css/font-awesome.css',__FILE__),90);
-         //FrontEnd scripts and styles
-         wp_enqueue_script( 'flightbook_script', plugins_url('/assets/flightbook_scripts.js',__FILE__), array('jquery'));
          //Select2
          wp_enqueue_style( 'flightbook_select2_styles', plugins_url('/assets/select2/select2.css',__FILE__),98);
          wp_enqueue_script( 'flightbook_select2_scripts', plugins_url('/assets/select2/select2.full.js',__FILE__), array('jquery'));
+         //Fuse
+         wp_enqueue_script( 'airports_scripts', plugins_url('/assets/fuse.js/airports.js',__FILE__));
+         wp_enqueue_script( 'fuse_scripts', plugins_url('/assets/fuse.js/fuse.js',__FILE__), array('airports_scripts'));
          //Custom
          wp_enqueue_style( 'flightbook_custom_styles', plugins_url('/assets/custom.css',__FILE__),100);
+         //FrontEnd scripts and styles
+         wp_enqueue_script( 'flightbook_script', plugins_url('/assets/flightbook_scripts.js',__FILE__), array('flightbook_select2_scripts','flatpickr_scripts','fuse_scripts','jquery'));
         }
     }
 
