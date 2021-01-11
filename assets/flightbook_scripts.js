@@ -503,6 +503,10 @@ function autocomplete_js(){
           results = fuse.search(ac.val());
           console.log(results);
           numResults = results.length;
+          if(numResults>7){
+            results.length = 7;
+            numResults = 7;
+          }
 
           var divs = results.map(function(r, i) {
               console.log(r);

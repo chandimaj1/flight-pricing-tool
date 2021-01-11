@@ -3,29 +3,72 @@ if (! defined( 'ABSPATH') ){
     die;
 }
 
-    //setting script variables
-    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
-    $site_host = "https://";   
-    else  
-    $site_host = "http://";   
-    // Append the host(domain name, ip) to the URL.   
-    $site_host.= $_SERVER['HTTP_HOST'];
+//setting script variables
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+$site_host = "https://";   
+else  
+$site_host = "http://";   
+// Append the host(domain name, ip) to the URL.   
+$site_host.= $_SERVER['HTTP_HOST']; 
 
-    $plugin_url = $site_host."/wp-content/plugins/headphone_ranker/";
+
+// Get SN Api Settings
+//include plugin_dir_path(__FILE__)."../ajax_php/get_sn_settings.php"; 
+//$sn_settings = get_settings_table_results();
+
 ?>
-
-<div id="hr_settings" style="display:none">
-    <input id="hr_pluginurl" value="<?= $plugin_url ?>" disabled/>
-    <input id="isadminpage" value="true" disabled/>
-</div>
+<h2 style="padding:20px;" id="admin-title">FlightBook Plugin Settings <br>
+<span>-FlightBook Pluggin by ChandimaJ</span></h2>
 
 <div class="container" id="admin-container">
-    <div class="row" style="margin-top:10px !important;">
-            <h5 id="admin-title">FlightBook Plugin Settings</h5>
+    <div class="row">
+        <div class="col-sm-8" id="sn-api-settings" >
+            <h4>Api Testing</h4>
+            <div class="signnow_error">Error! All fields must be filled.</div>
+            <div>Api URL:</div>
+            <div class="input-group">
+                <input type="text" id="sn_data_url" value="https://greatcirclemapper.p.rapidapi.com/airports/read" class="form-control" placeholder="Api Host">
+            </div>
+            <div>Api Host:</div>
+            <div class="input-group">
+                <input type="text" id="sn_data_host" value="greatcirclemapper.p.rapidapi.com" class="form-control" placeholder="Api Host">
+            </div>
+            <div>Api Key:</div>
+            <div class="input-group">
+                <input type="text" id="sn_data_key" value="0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb" class="form-control" placeholder="Api Key">
+            </div>
+            <div>Query String:</div>
+            <div class="input-group">
+                <input type="text" id="sn_data_query" value="KSFO"   class="form-control" placeholder="Api Query (if applicable)">
+            </div>
+            <div id="sn_save_settings">
+                <button type="button" class="btn btn-default sn_save">Test API</button>
+            </div>
 
-        <div class="col-sm-12" id="hr_stats_row" style="position:fixed; right:5px; top:5px;">
-            <img id="hranker_loader" src="/wp-content/plugins/headphone_ranker/assets/loading.gif" />
-            <div id="hr_message" class="text-right">Retrieving ...</div>
+            <hr>
+
+            <div>Result:</div>
+            <div class="input-group">
+                <textarea id="sn_data_result" value="" style="height:200px"  class="form-control" placeholder="-Results-"></textarea>
+            </div>
+ 
+            <div class="button-group">
+                
+            </div>
+            
+        </div>
+        <div class="col-sm-4">
+            
+        </div>
+    </div>
+ 
+    <div class="row" style="margin-top:50px;">
+        <div class="col-sm-6">
+            <h4>FrontEnd Implementation</h4>
+            <p> Use shortcode [flightbook] and slug '/flightbook' on any page / post </p>
         </div>
     </div>
 </div>
+
+
+
