@@ -1,6 +1,6 @@
 (function($) {
     //--- jQuery No Conflict
-    var ajax_url = '/wp-content/plugins/headphone_ranker/ajax_php/';
+    var ajax_url = '/wp-content/plugins/flight_booking/ajax_php/';
     
     /**
      * 
@@ -372,28 +372,6 @@ function onload_functions(){
         return {value: value, data: key};
     });
     
-    // Initialize ajax autocomplete:
-    $('.autocomplete').autocomplete({
-        // serviceUrl: '/autosuggest/service/url',
-        //lookup: countriesString,
-        lookup: countriesArray,
-        lookupFilter: function (suggestion, originalQuery, queryLowerCase) {
-            var re = new RegExp('\\b' + $.Autocomplete.utils.escapeRegExChars(queryLowerCase), 'gi');
-            return re.test(suggestion.value);
-        },
-        onSelect: function (suggestion) {
-            $('.selction-ajax').html('You selected: ' + suggestion.value + ', ' + suggestion.data);
-        },
-        onHint: function (hint) {
-            $('.autocomplete-ajax-x').val(hint);
-        },
-        onInvalidateSelection: function () {
-            $('.selction-ajax').html('You selected: none');
-        }
-    });
-    
-    
-    
     
     $(".swap").click(function (e) {
         $(this).toggleClass("rotate");
@@ -425,29 +403,124 @@ function onload_functions(){
  * 
  *  Auto Complete
  *  */    
+var delayTimer;
+
+var use_ajax = false;
+
+function ajax_search(search_param, results, list, fuse){
+  console.log('ajax search...');
+
+  clearTimeout(delayTimer);
+
+  delayTimer = setTimeout(function() {
+      // Do the ajax stuff
+
+  if (use_ajax==true){ // Use ajax autocomplete for airports
+    $.ajax({     
+      url: ajax_url + "fb_autocomplete.php",
+      method: "GET",
+      data: {
+        query: search_param
+      },
+      success: function(data)
+      {   
+        //console.log(data);
+        console.log('ajax search result:');
+        console.log( 'search_recieved_at:'+ Date.now() );
+        data = JSON.parse(data);
+        console.log(data);
+
+        //$.extend(results, data.response.airports, data.response.airports_by_cities, data.response.airports_by_countries);
+        results = [ ...data.response.airports, ...data.response.airports_by_cities, , ...data.response.airports_by_countries ];
+        
+        console.log(results);
+        numResults = results.length;
+        if(numResults>100){
+          results.length = 100;
+          numResults = 100;
+        }
+
+        var divs = results.map(function(r, i) {
+            console.log(r);
+            return '<div class="autocomplete-result" data-index="'+ i +'">'
+                 + '<div><b>'+ r.code +'</b> - '+ r.name +'</div>'
+                 + '<div class="autocomplete-location">'+ r.city_name +', '+ r.country_name +'</div>'
+                 + '</div>';
+         });
+
+        selectedIndex = -1;
+        list.html(divs.join(''))
+          .attr('data-highlight', selectedIndex);
+
+          console.log( 'search_print_at:'+Date.now() );
+
+        return window.results=results;
+      },
+
+      error: function(e)
+      {
+          console.log('error');
+          console.log(e);
+      }
+  });
+
+  }else{ // use airports.js list
+     results = fuse.search(search_param);
+     //console.log(results);
+
+     numResults = results.length;
+        if(numResults>100){
+          results.length = 100;
+          numResults = 100;
+        }
+
+        var divs = results.map(function(r, i) {
+          console.log(r);
+          return '<div class="autocomplete-result" data-index="'+ i +'">'
+               + '<div><b>'+ r.item.codeIataAirport +', <span class="icaocode">'+ r.item.codeIcaoAirport+'</span></b> - '+ r.item.nameAirport +'</div>'
+               + '<div class="autocomplete-location">'+ r.item.codeIso2Country +', '+ r.item.nameCountry +'</div>'
+               + '</div>';
+       });
+
+      selectedIndex = -1;
+      list.html(divs.join(''))
+        .attr('data-highlight', selectedIndex);
+
+        console.log( 'search_print_at:'+Date.now() );
+
+       window.results=results;
+  }
+    
+
+  }, 1000); // Will do the ajax stuff after 1000 ms, or 1 s
+
+  
+}
+
 function autocomplete_js(){
 
-    var airports = window.airports;
+    var airports = window.airports.airportsByCities;
+
     var options = {
         shouldSort: true,
         threshold: 0.4,
         maxPatternLength: 32,
         keys: [{
-          name: 'iata',
+          name: 'codeIataAirport',
           weight: 0.5
         }, {
-          name: 'name',
+          name: 'nameAirport',
           weight: 0.3
         }, {
-          name: 'city',
+          name: 'nameCountry',
           weight: 0.2
         }]
       };
       
       var fuse = new Fuse(airports, options)
       
-      
-      var ac = $('.autocompletex')
+      $('.autocompletex').each(function(){
+        let ac = $(this)
         .on('click', function(e) {
           e.stopPropagation();
         })
@@ -475,7 +548,7 @@ function autocomplete_js(){
             list.attr('data-highlight', index);
           }
         })
-        .on('click', clearResults);
+        .on('click', clearResults());
       
       function clearResults() {
         results = [];
@@ -484,13 +557,17 @@ function autocomplete_js(){
       }
       
       function selectIndex(index) {
-        if (results.length >= index + 1) {
-          ac.val(results[index].iata);
+        if ( (results.length >= index + 1) && use_ajax ) {
+          ac.val(results[index].codeIataAirport);
+          console.log(results[index].codeIataAirport);
           clearResults();
-        }  
+        }else if ( (results.length >= index + 1) && !use_ajax ) {
+          ac.val(results[index].item.codeIcaoAirport);
+          clearResults();
+        }
       }
       
-      var results = [];
+      results = [];
       var numResults = 0;
       var selectedIndex = -1;
       
@@ -499,26 +576,10 @@ function autocomplete_js(){
           return;
         }
         
-        if (ac.val().length > 0) {
-          results = fuse.search(ac.val());
-          console.log(results);
-          numResults = results.length;
-          if(numResults>7){
-            results.length = 7;
-            numResults = 7;
-          }
-
-          var divs = results.map(function(r, i) {
-              console.log(r);
-              return '<div class="autocomplete-result" data-index="'+ i +'">'
-                   + '<div><b>'+ r.item.iata +'</b> - '+ r.item.name +'</div>'
-                   + '<div class="autocomplete-location">'+ r.item.city +', '+ r.item.country +'</div>'
-                   + '</div>';
-           });
-          
-          selectedIndex = -1;
-          list.html(divs.join(''))
-            .attr('data-highlight', selectedIndex);
+        if (ac.val().length > 2) {
+          console.log( 'search_init_at:'+Date.now() );
+          //results = fuse.search(ac.val());
+          results = ajax_search( ac.val(), results, list, fuse );
       
         } else {
           numResults = 0;
@@ -555,6 +616,8 @@ function autocomplete_js(){
         e.stopPropagation();
         e.preventDefault(); // prevent the default action (scroll / move caret)
       }
+      })
+      
 }
 
 
@@ -592,11 +655,52 @@ function autocomplete_js(){
         onload_functions();
 
         autocomplete_js();
+
+        var results = [];
        
+        //console.log(window.airports.airportsByCities);
     });
 
     $(window).on('load', function () {
-        $('#exampleModalCenter').modal('show');
+       // $('#search_modal').modal('show');
+        $('.search_btn').on('click',function(){
+
+          //Copying InnterHtml to modal
+          $('#initial_selection .tab-pane').each(function(index,item){
+             let tab_html = $(item).html();
+             let current_tab = $(item).attr('id');
+                current_tab = current_tab.slice(0,-1);
+
+              $('#'+current_tab).html(tab_html);
+          });
+
+          let active_tab = $('#initial_selection .tab-content .tab-pane.active').attr('id');
+          active_tab = active_tab.slice(0,-1);
+          console.log('active tab: '+active_tab);
+
+          $('#search_modal .tab-content .tab-pane').removeClass('.show');
+          $('#search_modal .tab-content .tab-pane').removeClass('.active');
+
+          $('#search_modal #'+active_tab).addClass('.show');
+          $('#search_modal #'+active_tab).addClass('.active');
+
+
+
+          let legs = [];
+          $('#'+active_tab+' .flight-book-inner>form>.row').each(function(index,item){
+              console.log(item);
+          });
+          
+
+          let search_selection = {
+            active_tab : active_tab,
+            legs :legs,
+          };
+
+          console.log(search_selection);
+
+          $('#search_modal').modal('show');
+        });
     });
     
     //--- jQuery No Conflict

@@ -6,7 +6,7 @@
  /* 
  Plugin Name: Flight Booking
  Plugin URI: https://github.com/axawebs/flightbooking
- Description: Custom created plugin for Headphone Ranking on Wordpress
+ Description: Custom created FlightBooking plugin for VeloxAirCharter on Wordpress
  Version: 1.0
  Author: Chandima Jayasiri
  Author URI: mailto:chandimaj@icloud.com
@@ -237,14 +237,22 @@ class flightBook
          wp_enqueue_script( 'airports_scripts', plugins_url('/assets/fuse.js/airports.js',__FILE__));
          wp_enqueue_script( 'fuse_scripts', plugins_url('/assets/fuse.js/fuse.js',__FILE__), array('airports_scripts'));
          //Custom
-         wp_enqueue_style( 'flightbook_custom_styles', plugins_url('/assets/custom.css',__FILE__),100);
+         $color='gray';
+         if ( $color=='gray' ){
+            wp_enqueue_style( 'flightbook_custom_styles', plugins_url('/assets/gray.css',__FILE__),100);
+        }else if ( $color=='blue' ){
+            wp_enqueue_style( 'flightbook_custom_styles', plugins_url('/assets/blue.css',__FILE__),100);
+        }
+
+        wp_enqueue_style( 'flightbook_common_styles', plugins_url('/assets/common.css',__FILE__),101);
+
          //FrontEnd scripts and styles
          wp_enqueue_script( 'flightbook_script', plugins_url('/assets/flightbook_scripts.js',__FILE__), array('flightbook_select2_scripts','flatpickr_scripts','fuse_scripts','jquery'));
         }
     }
 
 
-
+ 
 
 
     //------ Shortcode
