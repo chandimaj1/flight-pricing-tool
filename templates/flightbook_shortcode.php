@@ -364,714 +364,635 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
 <div class="modal fade  search-modal" id="search_modal">
     <div class="modal modal-dialog modal-dialog" role="document">
         <div class="modal-content">
-            <div class="flight-book-top">
-                <div class="table-responsive">
-                    <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-one-way-tab" data-toggle="pill" href="#pills-one-way" role="tab" aria-controls="pills-one-way" aria-selected="true">One Way</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-round-trip-tab" data-toggle="pill" href="#pills-round-trip" role="tab" aria-controls="pills-round-trip" aria-selected="false">Round Trip</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-multi-leg-tab" data-toggle="pill" href="#pills-multi-leg" role="tab" aria-controls="pills-multi-leg" aria-selected="false">Multi Leg</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-empty-leg-tab" data-toggle="pill" href="#pills-empty-leg" role="tab" aria-controls="pills-empty-leg" aria-selected="false">Empty Legs</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="country-flight">
-                    <ul>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /></a></li>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /></a></li>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /></a></li>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /></a></li>
-                    </ul>
-                    <div class="currency-dropdown">
-                        <select class="templatingSelect2"> 
-                            <option value="usd">USD</option>
-                            <option value="euro">Eur</option>
-                            <option value="gbp">Tk</option>
-                        </select> 
-                    </div>
-                </div>
-            </div>  
-            <div class="tab-content" id="pills-tabContent">
-                <!-- One Way-->
-                <div class="tab-pane fade show active" id="pills-one-way" role="tabpanel" aria-labelledby="pills-one-way-tab">
-                    <div class="flight-book-inner">
-                        <form action="#" class="tab_content_placeholder">
-                            
-                        </form>
-                    </div>
-                </div> 
-                <!-- Round Trip-->
-                <div class="tab-pane fade" id="pills-round-trip" role="tabpanel" aria-labelledby="pills-round-trip-tab">
-                    <div class="flight-book-inner">
-                        <form action="#" class="tab_content_placeholder">
-                            
-                        </form>
-                    </div>
-                </div>
-                <!-- Multi -->
-                <div class="tab-pane fade" id="pills-multi-leg" role="tabpanel" aria-labelledby="pills-multi-leg-tab">
-                    <div class="flight-book-inner">
-                        <form action="#" class="tab_content_placeholder">
-                            
-                            
-                        </form>
-                    </div>
-                </div>
-                <!-- Empty -->
-                <div class="tab-pane fade" id="pills-empty-leg" role="tabpanel" aria-labelledby="pills-empty-leg-tab">
-                    <div class="flight-book-inner">
-                        <form action="#" class="tab_content_placeholder">
-                            
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <div class=" search-modal" id="results_modal">
 
+                <!-- Loader -->
+                <div class="search_loader fade show">
+                    <img src="<?= $plugin_url ?>assets/images/loader_grey.png" />
+                    <p>Please wait while we source the available aircraft</p>
+                </div>
 
-
-            <!--
-        Modal 02
-        -->
-        <div class=" search-modal" id="results_modal">
-            <!--
-            <div class=" modal-dialog " role="document">
-                <div class="modal-content">
-            -->
-                    <div class="search-results" id="search-results1">
-                        <div class="card-result">
-                            <div class="top-result">
-                                <div class="row no-gutters">
-                                    <div class="col-lg-7">
-                                        <div class="title-images">
-                                            <div class="row no-gutters">
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/aeroplane1.png" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/inner1.png" alt="">
-                                                    </div>
+                <!-- Results Set -->
+                <div class="search-results fade" id="search-results1">
+                    <div class="card-result">
+                        <div class="top-result">
+                            <div class="row no-gutters">
+                                <div class="col-lg-7">
+                                    <div class="title-images">
+                                        <div class="row no-gutters">
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/aeroplane1.png" alt="">
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <div class="detail-card">
-                                            <div class="media">
-                                                <div class="media-body">
-                                                    <h3>Turbo Prop  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
-                                                    <span class="badge-passanger">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
-                                                        5-9
-                                                    </span>
-                                                </div>
-                                                <div class="inquiry-info">
-
-                                                    <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c1" aria-expanded="false">
-                                                        <strong>7,050 USD*</strong>
-                                                        <span>Inquiry</span>
-                                                    </a>
-
-                                                    <p>*Estimated price before taxes & fees.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-card-footer row no-gutters">
-                                                <div class="col">
-                                                    <div class="time">09:00</div>
-                                                    <div class="loc">SAN</div>
-                                                </div>
-                                                <div class="img-flight">
-                                                    <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
-                                                    <div class="time-est">1h:50m</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="time">10:50</div>
-                                                    <div class="loc">OAK</div>
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/inner1.png" alt="">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="collapse" id="c1">
-                                    <form action="" class="contact-detail">
-                                        <p>Please provide your contact details here.</p>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Name">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
+                                <div class="col-lg-5">
+                                    <div class="detail-card">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h3>Turbo Prop  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
+                                                <span class="badge-passanger">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
+                                                    5-9
+                                                </span>
                                             </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="email" class="form-control" placeholder="Email" required>
-                                                        <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Phone Number">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Any special requests or requirements">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn cta-primary">Send Inquiry</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                            <div class="inquiry-info">
 
+                                                <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c1" aria-expanded="false">
+                                                    <strong>7,050 USD*</strong>
+                                                    <span>Inquiry</span>
+                                                </a>
+
+                                                <p>*Estimated price before taxes & fees.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-card-footer row no-gutters">
+                                            <div class="col">
+                                                <div class="time">09:00</div>
+                                                <div class="loc">SAN</div>
+                                            </div>
+                                            <div class="img-flight">
+                                                <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
+                                                <div class="time-est">1h:50m</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="time">10:50</div>
+                                                <div class="loc">OAK</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="c1">
+                                <form action="" class="contact-detail">
+                                    <p>Please provide your contact details here.</p>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="email" class="form-control" placeholder="Email" required>
+                                                    <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Phone Number">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Any special requests or requirements">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn cta-primary">Send Inquiry</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- RESULT 2   -->
+                    <div class="card-result">
+                        <div class="top-result">
+                            <div class="row no-gutters">
+                                <div class="col-lg-7">
+                                    <div class="title-images">
+                                        <div class="row no-gutters">
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/aeroplane2.png" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/inner2.png" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="detail-card">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h3>Light Jet <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
+                                                <span class="badge-passanger">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
+                                                    4-9
+                                                </span>
+                                            </div>
+                                            <div class="inquiry-info">
+
+                                                <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c2" aria-expanded="false">
+                                                    <strong>8100  USD*</strong>
+                                                    <span>Inquiry</span>
+                                                </a>
+
+                                                <p>*Estimated price before taxes & fees.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-card-footer row no-gutters">
+                                            <div class="col">
+                                                <div class="time">09:00</div>
+                                                <div class="loc">SAN</div>
+                                            </div>
+                                            <div class="img-flight">
+                                                <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
+                                                <div class="time-est">1h:50m</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="time">10:50</div>
+                                                <div class="loc">OAK</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="c2">
+                                <form action="" class="contact-detail">
+                                    <p>Please provide your contact details here.</p>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="email" class="form-control" placeholder="Email" required>
+                                                    <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Phone Number">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Any special requests or requirements">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn cta-primary">Send Inquiry</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- RESULT 3   -->
+                    <div class="card-result">
+                        <div class="top-result">
+                            <div class="row no-gutters">
+                                <div class="col-lg-7">
+                                    <div class="title-images">
+                                        <div class="row no-gutters">
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/aeroplane1.png" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/inner1.png" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="detail-card">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h3>Midsize Jet <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
+                                                <span class="badge-passanger">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
+                                                    5-9
+                                                </span>
+                                            </div>
+                                            <div class="inquiry-info">
+
+                                                <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c3" aria-expanded="false">
+                                                    <strong>7,050 USD*</strong>
+                                                    <span>Inquiry</span>
+                                                </a>
+
+                                                <p>*Estimated price before taxes & fees.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-card-footer row no-gutters">
+                                            <div class="col">
+                                                <div class="time">09:00</div>
+                                                <div class="loc">SAN</div>
+                                            </div>
+                                            <div class="img-flight">
+                                                <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
+                                                <div class="time-est">1h:50m</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="time">10:50</div>
+                                                <div class="loc">OAK</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="c3">
+                                <form action="" class="contact-detail">
+                                    <p>Please provide your contact details here.</p>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="email" class="form-control" placeholder="Email" required>
+                                                    <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Phone Number">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Any special requests or requirements">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn cta-primary">Send Inquiry</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- RESULT 4   -->
+                    <div class="card-result">
+                        <div class="top-result">
+                            <div class="row no-gutters">
+                                <div class="col-lg-7">
+                                    <div class="title-images">
+                                        <div class="row no-gutters">
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/aeroplane2.png" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/inner2.png" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="detail-card">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h3>Heavy Jet  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
+                                                <span class="badge-passanger">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
+                                                    4-9
+                                                </span>
+                                            </div>
+                                            <div class="inquiry-info">
+
+                                                <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c4" aria-expanded="false">
+                                                    <strong>8100  USD*</strong>
+                                                    <span>Inquiry</span>
+                                                </a>
+
+                                                <p>*Estimated price before taxes & fees.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-card-footer row no-gutters">
+                                            <div class="col">
+                                                <div class="time">09:00</div>
+                                                <div class="loc">SAN</div>
+                                            </div>
+                                            <div class="img-flight">
+                                                <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
+                                                <div class="time-est">1h:50m</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="time">10:50</div>
+                                                <div class="loc">OAK</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="c4">
+                                <form action="" class="contact-detail">
+                                    <p>Please provide your contact details here.</p>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="email" class="form-control" placeholder="Email" required>
+                                                    <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Phone Number">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Any special requests or requirements">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn cta-primary">Send Inquiry</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div> 
+                    <!-- RESULT 5   -->
+                    <div class="card-result">
+                        <div class="top-result">
+                            <div class="row no-gutters">
+                                <div class="col-lg-7">
+                                    <div class="title-images">
+                                        <div class="row no-gutters">
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/aeroplane1.png" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/inner1.png" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="detail-card">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h3>Ultra Long
+                                                    Range  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
+                                                <span class="badge-passanger">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
+                                                    5-9
+                                                </span>
+                                            </div>
+                                            <div class="inquiry-info">
+
+                                                <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c5" aria-expanded="false">
+                                                    <strong>7,050 USD*</strong>
+                                                    <span>Inquiry</span>
+                                                </a>
+
+                                                <p>*Estimated price before taxes & fees.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-card-footer row no-gutters">
+                                            <div class="col">
+                                                <div class="time">09:00</div>
+                                                <div class="loc">SAN</div>
+                                            </div>
+                                            <div class="img-flight">
+                                                <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
+                                                <div class="time-est">1h:50m</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="time">10:50</div>
+                                                <div class="loc">OAK</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="c5">
+                                <form action="" class="contact-detail">
+                                    <p>Please provide your contact details here.</p>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="email" class="form-control" placeholder="Email" required>
+                                                    <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Phone Number">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Any special requests or requirements">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn cta-primary">Send Inquiry</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- RESULT 6   -->
+                    <div class="card-result">
+                        <div class="top-result">
+                            <div class="row no-gutters">
+                                <div class="col-lg-7">
+                                    <div class="title-images">
+                                        <div class="row no-gutters">
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/aeroplane2.png" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="img-holder">
+                                                    <img src="<?= $plugin_url ?>assets/images/inner2.png" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="detail-card">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h3>Airliner  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
+                                                <span class="badge-passanger">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
+                                                    4-9
+                                                </span>
+                                            </div>
+                                            <div class="inquiry-info">
+
+                                                <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c6" aria-expanded="false">
+                                                    <strong>8100  USD*</strong>
+                                                    <span>Inquiry</span>
+                                                </a>
+
+                                                <p>*Estimated price before taxes & fees.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-card-footer row no-gutters">
+                                            <div class="col">
+                                                <div class="time">09:00</div>
+                                                <div class="loc">SAN</div>
+                                            </div>
+                                            <div class="img-flight">
+                                                <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
+                                                <div class="time-est">1h:50m</div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="time">10:50</div>
+                                                <div class="loc">OAK</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="c6">
+                                <form action="" class="contact-detail">
+                                    <p>Please provide your contact details here.</p>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Name">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="email" class="form-control" placeholder="Email" required>
+                                                    <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Phone Number">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <div class="input-field">
+                                                    <input type="text" class="form-control" placeholder="Any special requests or requirements">
+                                                    <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn cta-primary">Send Inquiry</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <!-- RESULT 2   -->
-                        <div class="card-result">
-                            <div class="top-result">
-                                <div class="row no-gutters">
-                                    <div class="col-lg-7">
-                                        <div class="title-images">
-                                            <div class="row no-gutters">
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/aeroplane2.png" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/inner2.png" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <div class="detail-card">
-                                            <div class="media">
-                                                <div class="media-body">
-                                                    <h3>Light Jet <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
-                                                    <span class="badge-passanger">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
-                                                        4-9
-                                                    </span>
-                                                </div>
-                                                <div class="inquiry-info">
-
-                                                    <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c2" aria-expanded="false">
-                                                        <strong>8100  USD*</strong>
-                                                        <span>Inquiry</span>
-                                                    </a>
-
-                                                    <p>*Estimated price before taxes & fees.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-card-footer row no-gutters">
-                                                <div class="col">
-                                                    <div class="time">09:00</div>
-                                                    <div class="loc">SAN</div>
-                                                </div>
-                                                <div class="img-flight">
-                                                    <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
-                                                    <div class="time-est">1h:50m</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="time">10:50</div>
-                                                    <div class="loc">OAK</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="collapse" id="c2">
-                                    <form action="" class="contact-detail">
-                                        <p>Please provide your contact details here.</p>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Name">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="email" class="form-control" placeholder="Email" required>
-                                                        <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Phone Number">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Any special requests or requirements">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn cta-primary">Send Inquiry</button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </div>
-                        </div>
-                        <!-- RESULT 3   -->
-                        <div class="card-result">
-                            <div class="top-result">
-                                <div class="row no-gutters">
-                                    <div class="col-lg-7">
-                                        <div class="title-images">
-                                            <div class="row no-gutters">
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/aeroplane1.png" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/inner1.png" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <div class="detail-card">
-                                            <div class="media">
-                                                <div class="media-body">
-                                                    <h3>Midsize Jet <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
-                                                    <span class="badge-passanger">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
-                                                        5-9
-                                                    </span>
-                                                </div>
-                                                <div class="inquiry-info">
-
-                                                    <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c3" aria-expanded="false">
-                                                        <strong>7,050 USD*</strong>
-                                                        <span>Inquiry</span>
-                                                    </a>
-
-                                                    <p>*Estimated price before taxes & fees.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-card-footer row no-gutters">
-                                                <div class="col">
-                                                    <div class="time">09:00</div>
-                                                    <div class="loc">SAN</div>
-                                                </div>
-                                                <div class="img-flight">
-                                                    <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
-                                                    <div class="time-est">1h:50m</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="time">10:50</div>
-                                                    <div class="loc">OAK</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="collapse" id="c3">
-                                    <form action="" class="contact-detail">
-                                        <p>Please provide your contact details here.</p>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Name">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="email" class="form-control" placeholder="Email" required>
-                                                        <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Phone Number">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Any special requests or requirements">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn cta-primary">Send Inquiry</button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </div>
-                        </div>
-                        <!-- RESULT 4   -->
-                        <div class="card-result">
-                            <div class="top-result">
-                                <div class="row no-gutters">
-                                    <div class="col-lg-7">
-                                        <div class="title-images">
-                                            <div class="row no-gutters">
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/aeroplane2.png" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/inner2.png" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <div class="detail-card">
-                                            <div class="media">
-                                                <div class="media-body">
-                                                    <h3>Heavy Jet  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
-                                                    <span class="badge-passanger">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
-                                                        4-9
-                                                    </span>
-                                                </div>
-                                                <div class="inquiry-info">
-
-                                                    <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c4" aria-expanded="false">
-                                                        <strong>8100  USD*</strong>
-                                                        <span>Inquiry</span>
-                                                    </a>
-
-                                                    <p>*Estimated price before taxes & fees.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-card-footer row no-gutters">
-                                                <div class="col">
-                                                    <div class="time">09:00</div>
-                                                    <div class="loc">SAN</div>
-                                                </div>
-                                                <div class="img-flight">
-                                                    <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
-                                                    <div class="time-est">1h:50m</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="time">10:50</div>
-                                                    <div class="loc">OAK</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="collapse" id="c4">
-                                    <form action="" class="contact-detail">
-                                        <p>Please provide your contact details here.</p>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Name">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="email" class="form-control" placeholder="Email" required>
-                                                        <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Phone Number">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Any special requests or requirements">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn cta-primary">Send Inquiry</button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </div>
-                        </div> 
-                        <!-- RESULT 5   -->
-                        <div class="card-result">
-                            <div class="top-result">
-                                <div class="row no-gutters">
-                                    <div class="col-lg-7">
-                                        <div class="title-images">
-                                            <div class="row no-gutters">
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/aeroplane1.png" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/inner1.png" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <div class="detail-card">
-                                            <div class="media">
-                                                <div class="media-body">
-                                                    <h3>Ultra Long
-                                                        Range  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
-                                                    <span class="badge-passanger">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
-                                                        5-9
-                                                    </span>
-                                                </div>
-                                                <div class="inquiry-info">
-
-                                                    <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c5" aria-expanded="false">
-                                                        <strong>7,050 USD*</strong>
-                                                        <span>Inquiry</span>
-                                                    </a>
-
-                                                    <p>*Estimated price before taxes & fees.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-card-footer row no-gutters">
-                                                <div class="col">
-                                                    <div class="time">09:00</div>
-                                                    <div class="loc">SAN</div>
-                                                </div>
-                                                <div class="img-flight">
-                                                    <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
-                                                    <div class="time-est">1h:50m</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="time">10:50</div>
-                                                    <div class="loc">OAK</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="collapse" id="c5">
-                                    <form action="" class="contact-detail">
-                                        <p>Please provide your contact details here.</p>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Name">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="email" class="form-control" placeholder="Email" required>
-                                                        <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Phone Number">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Any special requests or requirements">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn cta-primary">Send Inquiry</button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </div>
-                        </div>
-                        <!-- RESULT 6   -->
-                        <div class="card-result">
-                            <div class="top-result">
-                                <div class="row no-gutters">
-                                    <div class="col-lg-7">
-                                        <div class="title-images">
-                                            <div class="row no-gutters">
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/aeroplane2.png" alt="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="img-holder">
-                                                        <img src="<?= $plugin_url ?>assets/images/inner2.png" alt="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <div class="detail-card">
-                                            <div class="media">
-                                                <div class="media-body">
-                                                    <h3>Airliner  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
-                                                    <span class="badge-passanger">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
-                                                        4-9
-                                                    </span>
-                                                </div>
-                                                <div class="inquiry-info">
-
-                                                    <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#c6" aria-expanded="false">
-                                                        <strong>8100  USD*</strong>
-                                                        <span>Inquiry</span>
-                                                    </a>
-
-                                                    <p>*Estimated price before taxes & fees.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-card-footer row no-gutters">
-                                                <div class="col">
-                                                    <div class="time">09:00</div>
-                                                    <div class="loc">SAN</div>
-                                                </div>
-                                                <div class="img-flight">
-                                                    <img src="<?= $plugin_url ?>assets/images/flight-icon.svg" alt="" class="img-fluid">
-                                                    <div class="time-est">1h:50m</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="time">10:50</div>
-                                                    <div class="loc">OAK</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="collapse" id="c6">
-                                    <form action="" class="contact-detail">
-                                        <p>Please provide your contact details here.</p>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Name">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/user-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="email" class="form-control" placeholder="Email" required>
-                                                        <i><img src="<?= $plugin_url ?>assets/images/envelope-grey.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Phone Number">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/phne.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <div class="input-field">
-                                                        <input type="text" class="form-control" placeholder="Any special requests or requirements">
-                                                        <i><img src="<?= $plugin_url ?>assets/images/cmment.svg" alt=""></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn cta-primary">Send Inquiry</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        
                     </div>
-            <!--        
                 </div>
-            </div>
-            -->
-        </div><!-- / Modal 2 -->
+            </div><!-- / Modal 2 -->
         </div> 
-        
     </div> <!-- / Modal Dialog -->
-
-
-    
 </div>

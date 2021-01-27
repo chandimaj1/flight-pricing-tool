@@ -671,7 +671,6 @@ ul {
 
 /********* FLIGHT LIST DETAIL **********/
 .card-result {
-	margin-top: 30px;
 	border-radius: 3px;
 	background-color: #f6f6f6;
 }
@@ -1065,10 +1064,3 @@ ul {
 
 
 
-.modal-backdrop{
-	z-index:0 !important;
-}
-#search_btn{
-	color: #fff;
-	text-transform: uppercase;
-}
