@@ -9,16 +9,6 @@
      die;
  }
 
- // Clear Databasse Stored Data
- $headphoneRanker_files = get_posts ( array('post_type' => 'SignNow', 'numberposts' => -1) );
-
- /*
- //Selective delete of posts
-foreach ($signNow_files as $signNow_file){
-     wp_delete_post ( $signNow_file->ID, true);
-}
-*/
-
 /**
  * Powerful Delete
  * Access the database via SQL and delete everything related to the plugin
@@ -26,4 +16,10 @@ foreach ($signNow_files as $signNow_file){
 */
 global $wpdb; //Wordpress  query
 
-//$wpdb->query( "DELETE FROM wp_posts WHERE post_type = 'signNow'" );
+$table_name = $wpdb->prefix."flightbook_aircrafts";
+$wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+delete_option("flightbook_aircrafts_db");
+
+$table_name = $wpdb->prefix."flightbook_settings";
+$wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+delete_option("flightbook_settings_db");

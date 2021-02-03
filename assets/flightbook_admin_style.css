@@ -1,6 +1,3 @@
-#admin-container .input-group{
-    padding-bottom:5px;
-}
 
 #admin-title{
     color:teal;
@@ -10,48 +7,56 @@
     color:#999;
 }
 
-#admin-container button{
-    background-color: teal;
+#ac_table thead th{
+    font-size: 11pt;
     color:#fff;
-    transition:all .4s;
-} 
-#admin-container button:hover{
-    background-color:#000;
 }
-
-
-/*
- Status Messages 
- */
-.signnow_loading{
-    width: 100px;
-    display: none;
-}
-
-.signnow_success,.signnow_error{
-    position: relative;
-    display: none;
+#ac_table td{
     font-size: 10pt;
-    padding: 5px;
-    margin: 5px;
-    border: solid 1px #000;
-    border-radius: 4px;
-}
-.signnow_success{
-    background-color: #efe;
-}
-.signnow_error{
-    background-color: #fee;
 }
 
-/* Show when */
-.signnow_status_loading .signnow_loading{
-    display: inline-block;
+.ac_img_int button, 
+.ac_img_ext button,
+.ac_actions button{
+    position: relative;
+    width: 25px;
+    padding: 2px;
+    float: left;
+    margin:.5%;
 }
-.signnow_status_success .signnow_success{
-    display: inline-block;
+.ac_img_int button, 
+.ac_img_ext button,
+.ac_img_edit{
+    width: 100% !important;
 }
 
-.signnow_status_error .signnow_error{
+.ac_img_change,
+.ac_img_save,
+.ac_img_cancel{
+    display: none;
+}
+
+.editable_row .ac_img_view,
+.editable_row .ac_img_edit{
+    display: none;
+}
+
+.editable_row .ac_img_save,
+.editable_row .ac_img_cancel,
+.editable_row .ac_img_change
+{
     display: block;
+}
+
+#ac_table input{
+    pointer-events: none;
+    background-color: #ccc;
+    color: #000;
+}
+
+#ac_table .editable_row input{
+    pointer-events: auto;
+    background-color: #fff;
+    color: #000;
+    font-weight: 600;
 }

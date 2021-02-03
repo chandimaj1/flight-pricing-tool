@@ -13,6 +13,19 @@ if (! defined( 'ABSPATH') ){
 
     $plugin_url = $site_host."/wp-content/plugins/flight_booking/";
 
+    //Get Aircrafts settings from database
+    global $wpdb;
+    $table_name = $wpdb->prefix."flightbook_aircrafts";
+    $sql = "SELECT DISTINCT * FROM $table_name WHERE ac_status=1";
+    $result = $wpdb->get_results( $sql );
+    
+    if($result){ 
+        $msg= "success";
+        $aircrafts = json_encode($result);
+    }else{
+        $msg="failed";
+        $aircrafts = json_encode("{message:'error'}");
+    }
 
 //Normal Leg row template
 $leg_row_normal = '
@@ -36,7 +49,7 @@ $leg_row_normal = '
             </div>
         </div>
         <div class="retweet">
-            <a class="icon-change swap" href="#"><img src="'.$plugin_url.'assets/images/retweet-arrows.svg" alt="" /></a>
+            <a class="icon-change swap" ><img src="'.$plugin_url.'assets/images/retweet-arrows.svg" alt="" /></a>
         </div>
     </div>
 </div>
@@ -102,7 +115,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete one leg_from" placeholder="From" value="From" />
+                    <input type="text" class="form-control autocomplete one leg_from" placeholder="From"/>
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /></span>
                 </div> 
             </div> 
@@ -110,13 +123,13 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete two leg_to" placeholder="Where to?" value="Where to?" />
+                    <input type="text" class="form-control autocomplete two leg_to" placeholder="Where to?" />
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /></span>
                 </div> 
             </div>
         </div>
         <div class="retweet">
-            <a class="icon-change swap" href="#"><img src="'.$plugin_url.'assets/images/retweet-arrows.svg" alt="" /></a>
+            <a class="icon-change swap" ><img src="'.$plugin_url.'assets/images/retweet-arrows.svg" alt="" /></a>
         </div>
     </div>
 </div>
@@ -188,7 +201,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete one2 leg_from" placeholder="From" value="From" />
+                    <input type="text" class="form-control autocomplete one2 leg_from" placeholder="From" />
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /></span>
                 </div> 
             </div> 
@@ -196,13 +209,13 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete two2 leg_to" placeholder="Where to?" value="Where to?" />
+                    <input type="text" class="form-control autocomplete two2 leg_to" placeholder="Where to?" />
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /></span>
                 </div> 
             </div>
         </div>
         <div class="retweet">
-            <a class="icon-change swap2" href="#"><img src="'.$plugin_url.'assets/images/retweet-arrows.svg" alt="" /></a>
+            <a class="icon-change swap" ><img src="'.$plugin_url.'assets/images/retweet-arrows.svg" alt="" /></a>
         </div>
     </div>
 </div>
@@ -220,8 +233,8 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
             <div class="col-md-5">
                 <div class="form-group">
                     <div class="field">
-                        <select class="templatingSelect2 leg_no_of_passangers"> 
-                            <option selected="">Passenger </option>
+                        <select class="templatingSelect2 leg_no_of_passangers multi_select2"> 
+                            <option selected="" value="0">Passenger </option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -253,8 +266,8 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
             <div class="col-md-3">
                 <div class="form-group border-none">
                     <ul class="add-close-btn">
-                        <li><a class="btn brn-search addrow_btn" href="#"><img src="'.$plugin_url.'assets/images/pluse-icon.svg" alt="" /> </a></li>
-                        <li><a class="btn brn-search removerow_btn" href="#"><img src="'.$plugin_url.'assets/images/close-icon.svg" alt="" /></a></li>
+                        <li><a class="btn brn-search addrow_btn" ><img src="'.$plugin_url.'assets/images/pluse-icon.svg" alt="" /> </a></li>
+                        <li><a class="btn brn-search removerow_btn" ><img src="'.$plugin_url.'assets/images/close-icon.svg" alt="" /></a></li>
                     </ul>
                 </div>
             </div>
@@ -263,11 +276,124 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
 </div>
 </div>';
 
+
+$flight_info_card = '<div class="card-result aircraft_card" id="">
+<div class="top-result">
+    <div class="row no-gutters">
+        <div class="col-lg-7">
+            <div class="title-images">
+                <div class="row no-gutters">
+                    <div class="col-6">
+                        <div class="img-holder">
+                            <img src="'.$plugin_url.'assets/images/aircrafts/{{aircraft_image}}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="img-holder">
+                            <img src="'.$plugin_url.'assets/images/aircrafts/{{aircraft_inner_image}}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="detail-card">
+                <div class="media">
+                    <div class="media-body">
+                        <h3> {{aircraft_type}}  <i data-toggle="tooltip" data-placement="top" title="{{aircraft_desc}}"><img src="'.$plugin_url.'assets/images/question-circle.svg" alt=""></i></h3>
+                        <span class="badge-passanger">
+                            <i><img src="'.$plugin_url.'assets/images/user-white.svg" alt=""></i>
+                            {{pax_capacity}}
+                        </span>
+                    </div>
+                    <div class="inquiry-info">
+
+                        <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#{{contact_form_id}}" aria-expanded="false">
+                            <strong>{{price}}*</strong>
+                            <span>Inquiry</span>
+                        </a>
+
+                        <p>*Estimated price before taxes & fees.</p>
+                    </div>
+                </div>
+
+                <div class="detail-card-footer row no-gutters">
+                    <div class="col">
+                        <div class="time">{{departure_time}}</div>
+                        <div class="loc">{{origin_iata}}</div>
+                    </div>
+                    <div class="img-flight">
+                        <img src="'.$plugin_url.'assets/images/flight-icon.svg" alt="" class="img-fluid">
+                        <div class="time-est">{{total_duration}}</div>
+                    </div>
+                    <div class="col">
+                        <div class="time">{{arrival_time}}</div>
+                        <div class="loc">{{destination_iata}}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="{{contact_form_id}}">
+        <form action="" class="contact-detail">
+            <p>Please provide your contact details here.</p>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <div class="input-field">
+                            <input type="text" class="form-control contact_name" placeholder="Name">
+                            <i><img src="'.$plugin_url.'assets/images/user-grey.svg" alt=""></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <div class="input-field">
+                            <input type="email" class="form-control contact_email" placeholder="Email" required>
+                            <i><img src="'.$plugin_url.'assets/images/envelope-grey.svg" alt=""></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <div class="input-field">
+                            <input type="text" class="form-control contact_phone" placeholder="Phone Number">
+                            <i><img src="'.$plugin_url.'assets/images/phne.svg" alt=""></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div class="input-field">
+                            <input type="text" class="form-control contact_requirements" placeholder="Any special requests or requirements">
+                            <i><img src="'.$plugin_url.'assets/images/cmment.svg" alt=""></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <button class="btn cta-primary send_inquiry">Send Inquiry</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+</div>';
+
 ?>
 
 <div id="hr_settings" style="display:none">
     <input id="hr_pluginurl" value="<?= $plugin_url ?>" disabled/>
     <input id="isadminpage" value="true" disabled/>
+
+    <script type="text/javascript">
+        var plugin_url = "<?= $plugin_url ?>";
+        var multi_row_html = `<?= $leg_row_multi_row ?>`;
+        var flight_info_card = `<?= $flight_info_card ?>`;
+        var aircrafts = <?= $aircrafts ?>;
+        console.log(aircrafts);
+    </script>
 </div>
 
 <!-- Init Selection -->
@@ -278,31 +404,31 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                 <div class="table-responsive">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="pills-one-way-tab" data-toggle="pill" href="#pills-one-wayx" role="tab" aria-controls="pills-one-way" aria-selected="true">One Way</a>
+                            <a class="nav-link active" id="pills-one-way-tab" data-toggle="pill" href="#pills-one-way" role="tab" aria-controls="pills-one-way" aria-selected="true">One Way</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-round-trip-tab" data-toggle="pill" href="#pills-round-tripx" role="tab" aria-controls="pills-round-trip" aria-selected="false">Round Trip</a>
+                            <a class="nav-link" id="pills-round-trip-tab" data-toggle="pill" href="#pills-round-trip" role="tab" aria-controls="pills-round-trip" aria-selected="false">Round Trip</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-multi-leg-tab" data-toggle="pill" href="#pills-multi-legx" role="tab" aria-controls="pills-multi-leg" aria-selected="false">Multi Leg</a>
+                            <a class="nav-link" id="pills-multi-leg-tab" data-toggle="pill" href="#pills-multi-leg" role="tab" aria-controls="pills-multi-leg" aria-selected="false">Multi Leg</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-empty-leg-tab" data-toggle="pill" href="#pills-empty-legx" role="tab" aria-controls="pills-empty-leg" aria-selected="false">Empty Legs</a>
+                            <a class="nav-link" id="pills-empty-leg-tab" data-toggle="pill" href="#pills-empty-leg" role="tab" aria-controls="pills-empty-leg" aria-selected="false">Empty Legs</a>
                         </li>
                     </ul>
                 </div>
                 <div class="country-flight">
                     <ul>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /></a></li>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /></a></li>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /></a></li>
-                        <li><a href="#"><img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /></a></li>
+                        <li><a ><img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /></a></li>
+                        <li><a ><img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /></a></li>
+                        <li><a ><img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /></a></li>
+                        <li><a ><img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /></a></li>
                     </ul>
                     <div class="currency-dropdown">
-                        <select class="templatingSelect2"> 
-                            <option value="usd">USD</option>
-                            <option value="euro">Eur</option>
-                            <option value="gbp">Tk</option>
+                        <select class="templatingSelect2" id="currency_selector"> 
+                            <option id="currency_usd" cur_rate="1" value="usd">USD (&dollar;)</option>
+                            <option id="currency_eur" cur_rate="1" value="eur">EUR (&euro;)</option>
+                            <option id="currency_gbp" cur_rate="1" value="gbp">GBP (&pound;)</option>
                         </select> 
                     </div>
                 </div>
@@ -310,7 +436,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
             <div class="tab-content" id="pills-tabContent">
 
                 <!-- Init:: One way Tab-->
-                <div class="tab-pane fade show active" id="pills-one-wayx" role="tabpanel" aria-labelledby="pills-one-way-tab">
+                <div class="tab-pane fade show active" id="pills-one-way" role="tabpanel" aria-labelledby="pills-one-way-tab">
                     <div class="flight-book-inner">
                         <form action="#">
                             <!-- Leg row -->
@@ -321,7 +447,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
 
 
                 <!-- Init:: Round Trip Tab-->
-                <div class="tab-pane fade" id="pills-round-tripx" role="tabpanel" aria-labelledby="pills-round-trip-tab">
+                <div class="tab-pane fade" id="pills-round-trip" role="tabpanel" aria-labelledby="pills-round-trip-tab">
                     <div class="flight-book-inner">
                         <form action="#">
                             <!-- Leg row Round Trip-->
@@ -331,7 +457,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                 </div>
 
                 <!-- Init:: Multi Leg Tab-->
-                <div class="tab-pane fade" id="pills-multi-legx" role="tabpanel" aria-labelledby="pills-multi-leg-tab">
+                <div class="tab-pane fade" id="pills-multi-leg" role="tabpanel" aria-labelledby="pills-multi-leg-tab">
                     <div class="flight-book-inner">
                         <form action="#">
                             <!-- Leg Row Normal-->
@@ -343,7 +469,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                 </div>
 
                 <!-- Init:: Empty Leg Tab-->
-                <div class="tab-pane fade" id="pills-empty-legx" role="tabpanel" aria-labelledby="pills-empty-leg-tab">
+                <div class="tab-pane fade" id="pills-empty-leg" role="tabpanel" aria-labelledby="pills-empty-leg-tab">
                     <div class="flight-book-inner">
                         <form action="#">
                             <!-- Leg Row-->
@@ -368,13 +494,17 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
 
                 <!-- Loader -->
                 <div class="search_loader fade show">
+                    <span id="status_update"></span><br>
                     <img src="<?= $plugin_url ?>assets/images/loader_grey.png" />
                     <p>Please wait while we source the available aircraft</p>
                 </div>
 
+
+
                 <!-- Results Set -->
                 <div class="search-results fade" id="search-results1">
-                    <div class="card-result">
+
+                    <div class="card-result airplane_card" id="">
                         <div class="top-result">
                             <div class="row no-gutters">
                                 <div class="col-lg-7">
@@ -397,7 +527,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                                     <div class="detail-card">
                                         <div class="media">
                                             <div class="media-body">
-                                                <h3>Turbo Prop  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
+                                                <h3> Turbo Prop  <i data-toggle="tooltip" data-placement="top" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"><img src="<?= $plugin_url ?>assets/images/question-circle.svg" alt=""></i></h3>
                                                 <span class="badge-passanger">
                                                     <i><img src="<?= $plugin_url ?>assets/images/user-white.svg" alt=""></i>
                                                     5-9

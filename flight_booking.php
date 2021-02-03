@@ -86,7 +86,7 @@ class flightBook
         // Plugin activated state
         // generate a Custom Post Style
         // $this->custom_post_type();
-      //  $this->create_table();
+        $this->create_table();
         // Flush rewrite rules 
         flush_rewrite_rules();
     }
@@ -109,87 +109,54 @@ class flightBook
         // create table if not exist
         global $wpdb;
 
-        // Headphones
-        $table_name = $wpdb->prefix."flight_bookings";
+        // aircrafts
+        $table_name = $wpdb->prefix."flightbook_aircrafts";
         if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {
-            $sql = 'CREATE TABLE '.$table_name.'(
+            $sql = 'CREATE TABLE '.$table_name."(
             id INTEGER NOT NULL AUTO_INCREMENT,
-            rank VARCHAR(1),
-            brand VARCHAR(50),
-            device VARCHAR(50),
-            price VARCHAR(20),
-            value INT(2), 
-            principle VARCHAR(100),
-            overall_timbre VARCHAR(300),
-            summary TEXT,
-            ganre_focus VARCHAR(300),
-            PRIMARY KEY  (id))';
-            require_once(ABSPATH.'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            add_option("headphoneranker_db_version", "1.0");
-        }
+            ac_name VARCHAR(50),
+            ac_desc TEXT(1000),
+            ac_pax_min INT(3),
+            ac_pax_max INT(3),
+            ac_range float(20),
+            ac_speed float(20),
+            ac_per_hr_fee float(20),
+            ac_per_landing_fee float(20), 
+            ac_additions float(20),
+            ac_ground_mins float(20),
+            ac_interior_img VARCHAR(100),
+            ac_exterior_img VARCHAR(100),
+            ac_status INT(1),
+            PRIMARY KEY  (id))";
 
-        // IEM
-        $table_name = $wpdb->prefix."hranker_iem";
-        if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {
-            $sql = 'CREATE TABLE '.$table_name.'(
-            id INTEGER NOT NULL AUTO_INCREMENT,
-            rank VARCHAR(1),
-            brand VARCHAR(50),
-            device VARCHAR(50),
-            price VARCHAR(20),
-            value INT(2), 
-            overall_timbre VARCHAR(300),
-            summary TEXT,
-            ganre_focus VARCHAR(300),
-            PRIMARY KEY  (id))';
-            require_once(ABSPATH.'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            add_option("headphoneranker_db_version", "1.1");
-        }
+            $sql_insert = "INSERT INTO wp_flightbook_aircrafts (id, ac_name, ac_desc, ac_pax_min, ac_pax_max, ac_range, ac_speed, ac_per_hr_fee, ac_per_landing_fee, ac_additions, ac_ground_mins, ac_interior_img, ac_exterior_img, ac_status) VALUES
+            (1, 'Turboprop', 'Tooltip desctiption goes here', 5, 9, 2338, 288, 2225, 150, 10, 15, 'turbo-prop-category-iinterior.jpg', 'turbo-prop-category-iinterior.jpg', 1),
+            (2, 'Light Jets', 'Light Jets desctiption goes here', 5, 8, 1529, 355, 2850, 150, 10, 15, 'light-jet-category-interior.jpg', 'light-jet-category-interior.jpg', 1),
+            (3, 'Midsize Jets', 'Midsize Jets Description goes here', 8, 9, 2269, 422, 3750, 150, 10, 15, '', '', 1),
+            (4, 'Super MidsizeJets', 'Super MidsizeJets Description', 8, 10, 3063, 453, 5150, 150, 10, 15, '', '', 1),
+            (5, 'Heavy Private Jets', 'Heavy Private Jets Description', 10, 16, 4062, 499, 6800, 150, 10, 15, '', '', 1),
+            (6, 'Ultra Long Range Jets', 'Ultra Long Range Jets Description', 12, 16, 6226, 442, 9500, 150, 10, 15, '', '', 1),
+            (7, 'VIP Airliners', 'VIP Airliners Description', 16, 50, 4349, 477, 19500, 150, 10, 15, '', '', 1);";
 
-        // Earbuds
-        $table_name = $wpdb->prefix."hranker_earbuds";
-        if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {
-            $sql = 'CREATE TABLE '.$table_name.'(
-            id INTEGER NOT NULL AUTO_INCREMENT,
-            rank VARCHAR(1),
-            brand VARCHAR(50),
-            device VARCHAR(50),
-            price VARCHAR(20),
-            value INT(2),
-            overall_timbre VARCHAR(300),
-            summary TEXT,
-            ganre_focus VARCHAR(300),
-            PRIMARY KEY  (id))';
-            require_once(ABSPATH.'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            add_option("headphoneranker_db_version", "1.2");
-        }
-
-        // settings
-        $table_name = $wpdb->prefix."hranker_settings";
-        if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {
-            $sql = 'CREATE TABLE '.$table_name.'(
-            id INTEGER NOT NULL AUTO_INCREMENT,
-            headphones_html TEXT,
-            iem_html TEXT,
-            earbuds_html TEXT,
-            banner_image1 TEXT,
-            banner_image2 TEXT,
-            banner_image3 TEXT,
-            banner_image4 TEXT,
-            banner_url1 TEXT,
-            banner_url2 TEXT,
-            banner_url3 TEXT,
-            banner_url4 TEXT,
-            PRIMARY KEY  (id))';
-            $sql_insert = "INSERT INTO $table_name
-            VALUES (1,'- Headphones HTML goes here -','- IEM HTML goes here -','- EarBuds HTML goes here -','small_banner_default.jpg','small_banner_default.jpg','small_banner_default.jpg','small_banner_default.jpg','')";
             require_once(ABSPATH.'wp-admin/includes/upgrade.php');
             dbDelta($sql);
             dbDelta($sql_insert);
-            add_option("headphoneranker_db_version", "1.3");
+            add_option("flightbook_aircrafts_db", "1.0");
+        }
+
+        // settings
+        $table_name = $wpdb->prefix."flightbook_settings";
+        if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {
+            $sql = 'CREATE TABLE '.$table_name.'(
+            id INTEGER NOT NULL AUTO_INCREMENT,
+            color_theme VARCHAR(10),
+            PRIMARY KEY  (id))';
+            $sql_insert = "INSERT INTO $table_name
+            VALUES (1,'grey')";
+            require_once(ABSPATH.'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+            dbDelta($sql_insert);
+            add_option("flightbook_settings_db", "1.1");
         }
     }
     
@@ -218,7 +185,7 @@ class flightBook
         global $post;
         $post_slug = $post->post_name;
         //echo($post_slug);
-        if ( $post_slug=="flightbook" ){
+        if ( $post_slug=="flightbook" || true ){
         //Bootstrap
         wp_enqueue_style( 'bootstrap4_css', plugins_url('/assets/bootstrap4/bootstrap_4_5_2_min.css',__FILE__),80);
          wp_enqueue_script( 'bootstrap_bundle_scripts', plugins_url('/assets/bootstrap4/bootstrap.bundle.min.js',__FILE__), array('jquery'));

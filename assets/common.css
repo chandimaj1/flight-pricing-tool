@@ -25,9 +25,10 @@
 .modal-backdrop{
 	z-index:0 !important;
 }
-#search_btn{
-	color: #fff;
-	text-transform: uppercase;
+.search_btn{
+	color: #fff !important;
+    text-transform: uppercase;
+    font-weight: 900;
 }
 #search_modal .modal-dialog{
     overflow: visible;
@@ -85,4 +86,40 @@
 @-webkit-keyframes loadingSpinner {
     from { -webkit-transform: rotate(0deg)   }
     to   { -webkit-transform: rotate(360deg) }
+}
+
+
+
+/*
+    Swap Rotate
+*/
+.swap img{
+    transition: transform .3s linear;
+}
+.rotate img{
+    transform: rotate(180deg);
+}
+
+
+/*
+     Button Animations
+*/
+.search_btn, .addrow_btn, .removerow_btn{
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.search_btn:hover{
+    background-color: #666;
+}
+.addrow_btn:hover, 
+.removerow_btn:hover{
+    background-color: #bbb;
+}
+
+
+
+
+#status_update{
+    color: red;
 }
