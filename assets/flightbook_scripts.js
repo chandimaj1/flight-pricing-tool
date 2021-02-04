@@ -95,6 +95,11 @@ function onload_settings(){
           console.log(e);
       }
     });
+
+    //Close Modal
+    $('.modal_close').on('click', function(){
+      $('#search_modal').modal('hide');
+    });
 }
 
 
@@ -522,6 +527,12 @@ function search_for_aircrafts(){
             //UTC Timing...
             let departure_dateandtime = new Date(search_selection.legs[0].departure_date);
             let departure_dateandtime_utc = departure_dateandtime.getTime();
+            if ( isNaN(departure_dateandtime_utc) ){
+              departure_dateandtime = new Date();
+              departure_dateandtime.setHours(0,0,0,0);
+              departure_dateandtime_utc = departure_dateandtime.getTime();
+            }
+
             console.log(departure_dateandtime_utc);
             console.log(departure_dateandtime);
 
@@ -541,6 +552,22 @@ function search_for_aircrafts(){
 
             //Populate results for each aircraft
             $(aircrafts).each(function(index, item){
+
+               //Aircraft Images
+               flight_card_html = flight_card_html.replace('{{aircraft_image}}',item.ac_exterior_img);
+               flight_card_html = flight_card_html.replace('{{aircraft_inner_image}}',item.ac_interior_img);
+               //Type
+               flight_card_html = flight_card_html.replace('{{aircraft_type}}',item.ac_name);
+               //Pax
+               flight_card_html = flight_card_html.replace('{{pax_capacity}}',item.ac_pax_min+'-'+item.ac_pax_max);
+               //Description
+               flight_card_html = flight_card_html.replace('{{aircraft_desc}}',item.ac_desc);
+               //Contact Form Link & ID
+               flight_card_html = flight_card_html.replace('{{contact_form_link}}','ac_contact_form'+item.id);
+               flight_card_html = flight_card_html.replace('{{contact_form_id}}','ac_contact_form'+item.id);
+
+
+
 
               //Calculations
               let ac_range = parseFloat(item.ac_range);
@@ -568,39 +595,49 @@ function search_for_aircrafts(){
                   price = Math.ceil(price);
 
               let flight_card_html = window.flight_info_card;
-              //Aircraft Images
-              flight_card_html = flight_card_html.replace('{{aircraft_image}}',item.ac_exterior_img);
-              flight_card_html = flight_card_html.replace('{{aircraft_inner_image}}',item.ac_interior_img);
-              //Type
-              flight_card_html = flight_card_html.replace('{{aircraft_type}}',item.ac_name);
-              //Pax
-              flight_card_html = flight_card_html.replace('{{pax_capacity}}',item.ac_pax_min+'-'+item.ac_pax_max);
-              //Description
-              flight_card_html = flight_card_html.replace('{{aircraft_desc}}',item.ac_desc);
-              //Contact Form ID
-              flight_card_html = flight_card_html.replace('{{contact_form_id}}','test001');
+
               //Price
               flight_card_html = flight_card_html.replace( '{{price}}', price.toLocaleString() );
-              //Airport info
-              let origin_time_hr = departure_dateandtime.getHours();
+
+
+
+              /**
+               * Per leg calculations
+               */
+
+              let legs_html = '';
+              if (search_selection.active_tab=='pills-one-way'){
+                let legs_timing_html =  window.legs_time_template;
+                //Airport info
+                let origin_time_hr = departure_dateandtime.getHours();
                 if (origin_time_hr<10){origin_time_hr=''+0+origin_time_hr};
-              let origin_time_min = departure_dateandtime.getMinutes();
+              
+                let origin_time_min = departure_dateandtime.getMinutes();
                 if (origin_time_min<10){origin_time_min=''+0+origin_time_min};
-              flight_card_html = flight_card_html.replace('{{departure_time}}',origin_time_hr+":"+origin_time_min);
-              flight_card_html = flight_card_html.replace('{{origin_iata}}',origin_airpot);
               
-              if (destination_time_min<10){destination_time_min=''+0+destination_time_min};
-              if (destination_time_hr<10){destination_time_hr=''+0+destination_time_hr};
-              flight_card_html = flight_card_html.replace('{{arrival_time}}',destination_time_hr+":"+destination_time_min);
-              flight_card_html = flight_card_html.replace('{{destination_iata}}',destination_airpot);
+                legs_timing_html = legs_timing_html.replace('{{departure_time}}',origin_time_hr+":"+origin_time_min);
+                legs_timing_html = legs_timing_html.replace('{{origin_iata}}',origin_airpot);
               
-              //Total Flight Time
-              if(total_duration_hours<10){total_duration_hours=''+0+total_duration_hours};
-              if(total_duration_minutes<10){total_duration_minutes=''+0+total_duration_minutes};
+                if (destination_time_min<10){destination_time_min=''+0+destination_time_min};
+                if (destination_time_hr<10){destination_time_hr=''+0+destination_time_hr};
 
-              flight_card_html = 
-              flight_card_html.replace('{{total_duration}}',total_duration_hours+':'+total_duration_minutes);
+                legs_timing_html = legs_timing_html.replace('{{arrival_time}}',destination_time_hr+":"+destination_time_min);
+                legs_timing_html = legs_timing_html.replace('{{destination_iata}}',destination_airpot);
+              
+                //Total Flight Time
+                if(total_duration_hours<10){total_duration_hours=''+0+total_duration_hours};
+                if(total_duration_minutes<10){total_duration_minutes=''+0+total_duration_minutes};
 
+                legs_timing_html = 
+                legs_timing_html.replace('{{total_duration}}',total_duration_hours+':'+total_duration_minutes);
+
+                legs_html = legs_timing_html;
+              }
+
+
+
+              //Final HTML append to placeholder
+              flight_card_html = flight_card_html.replace('{{legs_time_placeholder}}', legs_html);
               $('#search-results1').append(flight_card_html);
             });
 

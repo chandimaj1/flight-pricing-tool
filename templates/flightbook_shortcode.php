@@ -115,7 +115,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete one leg_from" placeholder="From"/>
+                    <input type="text" class="form-control autocompletex one leg_from" placeholder="From" value="" />
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /></span>
                 </div> 
             </div> 
@@ -123,7 +123,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete two leg_to" placeholder="Where to?" />
+                    <input type="text" class="form-control autocompletex two leg_to" placeholder="Where to?" />
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /></span>
                 </div> 
             </div>
@@ -284,13 +284,11 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
             <div class="title-images">
                 <div class="row no-gutters">
                     <div class="col-6">
-                        <div class="img-holder">
-                            <img src="'.$plugin_url.'assets/images/aircrafts/{{aircraft_image}}" alt="">
+                        <div class="img-holder" style="background-image:url('."'$plugin_url"."assets/images/aircrafts/{{aircraft_image}}'".')">
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="img-holder">
-                            <img src="'.$plugin_url.'assets/images/aircrafts/{{aircraft_inner_image}}" alt="">
+                        <div class="img-holder" style="background-image:url('."'$plugin_url"."assets/images/aircrafts/{{aircraft_inner_image}}'".')">
                         </div>
                     </div>
                 </div>
@@ -308,7 +306,7 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
                     </div>
                     <div class="inquiry-info">
 
-                        <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#{{contact_form_id}}" aria-expanded="false">
+                        <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#{{contact_form_link}}" aria-expanded="false">
                             <strong>{{price}}*</strong>
                             <span>Inquiry</span>
                         </a>
@@ -317,21 +315,7 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
                     </div>
                 </div>
 
-                <div class="detail-card-footer row no-gutters">
-                    <div class="col">
-                        <div class="time">{{departure_time}}</div>
-                        <div class="loc">{{origin_iata}}</div>
-                    </div>
-                    <div class="img-flight">
-                        <img src="'.$plugin_url.'assets/images/flight-icon.svg" alt="" class="img-fluid">
-                        <div class="time-est">{{total_duration}}</div>
-                    </div>
-                    <div class="col">
-                        <div class="time">{{arrival_time}}</div>
-                        <div class="loc">{{destination_iata}}</div>
-                    </div>
-                </div>
-
+                {{legs_time_placeholder}}
             </div>
         </div>
     </div>
@@ -381,6 +365,21 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
 </div>
 </div>';
 
+$legs_time_template = '<div class="detail-card-footer row no-gutters">
+<div class="col">
+    <div class="time">{{departure_time}}</div>
+    <div class="loc">{{origin_iata}}</div>
+</div>
+<div class="img-flight">
+    <img src="'.$plugin_url.'assets/images/flight-icon.svg" alt="" class="img-fluid">
+    <div class="time-est">{{total_duration}}</div>
+</div>
+<div class="col">
+    <div class="time">{{arrival_time}}</div>
+    <div class="loc">{{destination_iata}}</div>
+</div>
+</div>';
+
 ?>
 
 <div id="hr_settings" style="display:none">
@@ -391,6 +390,7 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
         var plugin_url = "<?= $plugin_url ?>";
         var multi_row_html = `<?= $leg_row_multi_row ?>`;
         var flight_info_card = `<?= $flight_info_card ?>`;
+        var legs_time_template = `<?= $legs_time_template ?>`;
         var aircrafts = <?= $aircrafts ?>;
         console.log(aircrafts);
     </script>
@@ -490,6 +490,8 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
 <div class="modal fade  search-modal" id="search_modal">
     <div class="modal modal-dialog modal-dialog" role="document">
         <div class="modal-content">
+            <div class="modal_close"><i class="fa fa-times"></i></div>
+            
             <div class=" search-modal" id="results_modal">
 
                 <!-- Loader -->

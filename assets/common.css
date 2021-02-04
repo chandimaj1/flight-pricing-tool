@@ -123,3 +123,27 @@
 #status_update{
     color: red;
 }
+
+.img-holder {
+    width: auto;
+    background-size: cover;
+    height: 253px;
+    background-position-x: right;
+    display: flex;
+}
+
+.modal_close {
+    position: absolute;
+    right: 10px;
+    font-size: 17pt;
+    font-weight: 100;
+    top: 0px;
+    opacity: .4;
+    transition: all .4s;
+    z-index: 99999;
+    cursor: pointer;
+}
+.modal_close:hover{
+    opacity: 1;
+    color: red;
+}

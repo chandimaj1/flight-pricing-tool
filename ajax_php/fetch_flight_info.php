@@ -6,6 +6,8 @@ $active_tab = $_POST["active_tab"];
 $route = '';
 if ($active_tab=='pills-one-way'){
     $route = $_POST["legs"][0]["from_icao"].'-'.$_POST["legs"][0]["to_icao"];
+}else if ($active_tab=='pills-round-trip'){
+    $route = $_POST["legs"][0]["from_icao"].'-'.$_POST["legs"][0]["to_icao"];
 }
 //echo ($route);
 function curl_results($route){

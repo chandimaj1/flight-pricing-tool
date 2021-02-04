@@ -103,7 +103,7 @@ class flightBook
         //delete all plugin data from the DB
 
     }
-
+ 
 
     function create_table(){ 
         // create table if not exist

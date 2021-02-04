@@ -60,3 +60,16 @@
     color: #000;
     font-weight: 600;
 }
+
+.aircraft_row, 
+.ac_img_int, 
+.ac_img_ext{
+    transition: all .5s;
+}
+.redback{
+    background-color: #c66 !important;
+}
+.redback>button{
+    background-color:#c66;
+    pointer-events: none;
+}

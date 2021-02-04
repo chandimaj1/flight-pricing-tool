@@ -1060,7 +1060,20 @@ ul {
 }
 
 
+.aircraft_card {
+    border: solid 5px #eee;
+    margin-bottom: 10px;
+    border-radius: 10px;
+	overflow: hidden;
+	transition: all .4s;
+}
 
-
-
-
+.aircraft_card:hover{
+	box-shadow: 0 0 10px 5px #ccc;
+}
+.aircraft_card:hover .cta-inquiry{
+	background-color: #aaa;
+}
+.cta-inquiry{
+	transition: all .4s;
+}

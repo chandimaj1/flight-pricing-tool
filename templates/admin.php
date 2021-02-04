@@ -33,6 +33,7 @@ global $wpdb;
     <span>-FlightBook Pluggin by ChandimaJ</span></h2>
     
     <h4>Aircraft Categories</h4>
+        <input id="ac_file_upload" type="file" style="display:none;"/>
         <table id="ac_table" class="table-responsive table-sm table-striped">
             <thead class="thead-dark">
                 <tr class="bg-info">
@@ -48,7 +49,7 @@ global $wpdb;
                     <th style="width:6%">PerLand (min)</th>
                     <th style="width:50px">In. Img</th>
                     <th style="width:50px">Out. Img</th>
-                    <th style="width:60px">Actions</th>
+                    <th style="width:60px">Edit Row</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,12 +73,12 @@ global $wpdb;
                         <button class='btn btn-primary ac_img_view'><i class="fa fa-eye"></i></button>
                         <button class='btn btn-primary ac_img_change'><i class="fa fa-plus"></i></button>
                     </td>
-                    <td class="ac_img_ext" img_name='<?= $row->ac_interior_img ?>'>
+                    <td class="ac_img_ext" img_name='<?= $row->ac_exterior_img ?>'>
                         <button class='btn btn-primary ac_img_view'><i class="fa fa-eye"></i></button>
                         <button class='btn btn-primary ac_img_change'><i class="fa fa-plus"></i></button>
                     </td>
                     <td class="ac_actions">
-                        <button class='btn btn-success ac_img_save'><i class="fa fa-check"></i></button>
+                        <button class='btn btn-success ac_img_save'><i class="fa fa-check"></i></button> 
                         <button class='btn btn-danger ac_img_cancel'><i class="fa fa-times"></i></button>
                         <button class='btn btn-warning ac_img_edit'><i class="fa fa-edit"></i></button>
                     </td>
@@ -90,9 +91,26 @@ global $wpdb;
 ?>
             </tbody>
         </table>
-    
-
 </div>
 
 
+<div class="modal fade" id="ac_img_viewer" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="" style="width:100%">
+      </div>
+      <div class="modal-footer">
+        <a href="" target="_blank"><button type="button" class="btn btn-primary">Full View</button></a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
