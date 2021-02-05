@@ -116,11 +116,19 @@ function ui_functions(){
     //Swap values
     let current_row = $(this.parentElement.parentElement);
       //Getting values
-      let current_row_from = current_row.find('.leg_from').val();
-      let current_row_to = current_row.find('.leg_to').val();
+      let current_row_from_iata = current_row.find('.leg_from').val();
+      let current_row_from_icao = current_row.find('.leg_from').attr('selected_icao');
+      let current_row_from_gmt = current_row.find('.leg_from').attr('selected_gmt');
+      let current_row_to_iata = current_row.find('.leg_to').val();
+      let current_row_to_icao = current_row.find('.leg_to').attr('selected_icao');
+      let current_row_to_gmt = current_row.find('.leg_to').attr('selected_gmt');
       //Setting Values
-      current_row.find('.leg_from').val(current_row_to);
-      current_row.find('.leg_to').val(current_row_from);
+      current_row.find('.leg_from').val(current_row_to_iata);
+      current_row.find('.leg_from').attr('selected_icao',current_row_to_icao);
+      current_row.find('.leg_from').attr('selected_gmt',current_row_to_gmt);
+      current_row.find('.leg_to').val(current_row_from_iata);
+      current_row.find('.leg_to').attr('selected_icao',current_row_to_icao);
+      current_row.find('.leg_to').attr('selected_gmt',current_row_to_gmt);
   });
 
   //Tooltip Settings

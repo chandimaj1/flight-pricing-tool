@@ -153,3 +153,8 @@
     transition: all .4s;
     background-color: #fee !important;
 }
+
+.ac_date{
+    color: #666;
+    font-size: 10pt;
+}
