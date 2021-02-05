@@ -16,6 +16,7 @@
 #results_modal {
     position: relative;
     width: 100%;
+    min-height: 230px;
 }
 
 
@@ -133,17 +134,22 @@
 }
 
 .modal_close {
-    position: absolute;
+    position: fixed;
     right: 10px;
-    font-size: 17pt;
+    font-size: 22pt;
     font-weight: 100;
-    top: 0px;
-    opacity: .4;
+    top: 20px;
+    opacity: 1;
     transition: all .4s;
-    z-index: 99999;
+    z-index: 9999999;
     cursor: pointer;
 }
 .modal_close:hover{
     opacity: 1;
-    color: red;
+    color: #fff;
+}
+
+.redfont {
+    transition: all .4s;
+    background-color: #fee !important;
 }

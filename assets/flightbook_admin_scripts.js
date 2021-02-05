@@ -153,7 +153,7 @@ function image_uploads(){
 }
 
 function do_file_upload(ac_img_type,ac_row){
-    $('#aircraft_row'+ac_row+' '+ac_img_type).addClass('redback');
+    $('#aircraft_row'+ac_row+' .'+ac_img_type).addClass('redback');
 
     const file = $('#ac_file_upload')[0].files[0];
     /**

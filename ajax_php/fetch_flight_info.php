@@ -8,7 +8,29 @@ if ($active_tab=='pills-one-way'){
     $route = $_POST["legs"][0]["from_icao"].'-'.$_POST["legs"][0]["to_icao"];
 }else if ($active_tab=='pills-round-trip'){
     $route = $_POST["legs"][0]["from_icao"].'-'.$_POST["legs"][0]["to_icao"];
+
+//Multi Leg    
+}else if ($active_tab=='pills-multi-leg'){
+
+  $i = 0;
+  foreach ( $_POST["legs"] as $leg ){
+
+    if ( $i==0 ){  
+      $route = $_POST["legs"][$i]["from_icao"].'-'.$_POST["legs"][$i]["to_icao"];
+    }else{ 
+      $previousi = $i-1;
+      if ( $_POST["legs"][$i]["from_icao"] !=  $_POST["legs"][$previousi]["to_icao"]){
+        $route .= '-'.$_POST["legs"][$i]["from_icao"].'-'.$_POST["legs"][$i]["to_icao"];  
+      }else{
+        $route .= '-'.$_POST["legs"][$i]["to_icao"];  
+      }
+    }
+
+    $i++;
+  }
 }
+
+//var_dump ($route);
 //echo ($route);
 function curl_results($route){
     $curl = curl_init();

@@ -17,6 +17,9 @@ var use_ajax = false;
  */
 
 $(document).ready(function() {
+  console.log('Flighbook Shortcode JavaScripts Loaded');
+  console.log('Loaded Airports from Database:');
+  console.log(window.airports);
 
   var results = [];
 
@@ -43,18 +46,6 @@ $(document).ready(function() {
  */   
 function onload_settings(){
   $("input[type='number'].spinner").inputSpinner();
-
-  //Flatpicker Settings
-  $(".selector, .selector2").flatpickr({
-    //mode: "range",
-    minDate: "today",
-    dateFormat: "d-m-Y H:i",
-    enableTime: true, 
-    disableMobile: "true"
-  });
-
-  //Tooltip Settings
-  $('i').tooltip();
   
   //Currency Set -- To be tested
   function setCurrency(currency) {
@@ -78,6 +69,7 @@ function onload_settings(){
       method: "GET",
       success: function(data)
       {   
+        console.log('Loading currency conversions from api...');
         console.log(data);
         if (typeof data.rates["GBP"] !== 'undefined' && typeof data.rates["USD"] !== 'undefined'){
           let usd_to_eur = 1/data.rates["USD"];
@@ -131,19 +123,32 @@ function ui_functions(){
       current_row.find('.leg_to').val(current_row_from);
   });
 
+  //Tooltip Settings
+  $('i').tooltip();
 
+  //Flatpicker Settings
+  $(".selector, .selector2").flatpickr({
+    //mode: "range",
+    minDate: "today",
+    dateFormat: "d-m-Y H:i",
+    enableTime: true, 
+    disableMobile: "true"
+  });
+
+  $('.multi_select2').select2();
 
   //Add new row on multi leg
-  $('#pills-multi-legx .addrow_btn').off().on('click',function(){
+  $('#pills-multi-leg .addrow_btn').off().on('click',function(){
     $(this).closest('form').append(window.multi_row_html);
-    $('.multi_select2').select2();
     ui_functions();
+    autocomplete_js();
+
   });
 
   //Remove row on multi leg
-  $('#pills-multi-legx .removerow_btn').off().on('click',function(){
+  $('#pills-multi-leg .removerow_btn').off().on('click',function(){
     let noof_multirows = $(this).closest('form').find('.leg_row').length;
-    console.log(noof_multirows);
+    //console.log(noof_multirows);
     if ( noof_multirows > 2 ){
       $(this).closest('.leg_row').remove();
     }else{
@@ -363,7 +368,7 @@ function autocomplete_js(){
         }
 
         var divs = results.map(function(r, i) {
-          console.log(r);
+          //console.log(r);
           return '<div class="autocomplete-result" data-index="'+ i +'">'
               + '<div><b>'+ r.item.codeIataAirport +', <span class="icaocode">'+ r.item.codeIcaoAirport+'</span></b> - '+ r.item.nameAirport +'</div>'
               + '<div class="autocomplete-location">'+ r.item.codeIso2Country +', '+ r.item.nameCountry +'</div>'
@@ -396,54 +401,128 @@ function autocomplete_js(){
  */
 function search_for_aircrafts(){
   $('.search_btn').off().on('click',function(){
+    $('#status_update').html("");
+    $('#search_modal').modal('hide');
 
-    $('.search-results').removeClass('show');
-    $('.search_loader').removeClass('show');
+    if ( validate_search() ){ // Check for validation
+      $('.search-results').removeClass('show');
+      $('.search_loader').removeClass('show');
+  
+      let active_tab = $('#initial_selection .tab-content .tab-pane.active').attr('id');
+      console.log('active tab: '+active_tab);
+  
+      let legs = [];
 
-    let active_tab = $('#initial_selection .tab-content .tab-pane.active').attr('id');
-    console.log('active tab: '+active_tab);
-
-    let legs = [];
-    $('#'+active_tab+' .leg_row').each(function(index,item){
+      let i = 0;
+      $('#'+active_tab+' .leg_row').each(function(index,item){
+        
         let leg = {
-            from_iata : $(this).find('.leg_from').val(),
-            from_icao : $(this).find('.leg_from').attr('selected_icao'),
-            from_gmt : $(this).find('.leg_from').attr('selected_gmt'),
-            to_iata : $(this).find('.leg_to').val(),
-            to_icao : $(this).find('.leg_to').attr('selected_icao'),
-            to_gmt : $(this).find('.leg_to').attr('selected_gmt'),
-            departure_date : $(this).find('.leg_departure_date').val(),
-            return_date : $(this).find('.leg_return_date').val(),
-            pax : $(this).find('.leg_no_of_passengers').val()
+          from_iata : $(this).find('.leg_from').val(),
+          from_icao : $(this).find('.leg_from').attr('selected_icao'),
+          from_gmt : $(this).find('.leg_from').attr('selected_gmt'),
+          to_iata : $(this).find('.leg_to').val(),
+          to_icao : $(this).find('.leg_to').attr('selected_icao'),
+          to_gmt : $(this).find('.leg_to').attr('selected_gmt'),
+          departure_date : $(this).find('.leg_departure_date').val(),
+          return_date : $(this).find('.leg_return_date').val(),
+          pax : $(this).find('.leg_no_of_passengers').val()
         };
 
-        legs.push(leg);
-    });
-    
+        //Additional leg row if injected before for multi leg select
+        if (active_tab=="pills-multi-leg" && i>0){
+          let previous_index = i - 1;
+          let intermediate_leg = {
+            from_iata : legs[previous_index].to_iata,
+            from_icao : legs[previous_index].to_icao,
+            from_gmt : legs[previous_index].to_gmt,
+            to_iata : $(this).find('.leg_from').val(),
+            to_icao : $(this).find('.leg_from').attr('selected_icao'),
+            to_gmt : $(this).find('.leg_from').attr('selected_gmt'),
+            departure_date : legs[previous_index].return_date,
+            return_date : $(this).find('.leg_return_date').val(),
+            pax : legs[previous_index].pax
+          };
+          legs[i]=intermediate_leg;
+          legs[i+1]=leg;
+          i = i+2;
+        }else{
+          legs[i]=leg;
+          i = i+1;
+        }
+      });
+      
+  
+      let search_selection = {
+        active_tab : active_tab,
+        legs :legs,
+      };
+  
+      console.log(search_selection);
+  
+      // Animate page scroll to selection top
+      let initselect_scroll_top = $("#initial_selection").offset().top;
+      initselect_scroll_top = initselect_scroll_top - 50;
+  
+      // Animate search loader
+      $('html, body').stop().animate({
+        scrollTop: initselect_scroll_top
+      }, 300, function(){
+        $('#search_modal').modal('show');
+        $('.search_loader').addClass('show');
+      });
+  
+      get_search_results(search_selection);
+        
+    }else{
 
-    let search_selection = {
-      active_tab : active_tab,
-      legs :legs,
-    };
-
-    console.log(search_selection);
-
-    // Animate page scroll to selection top
-    let initselect_scroll_top = $("#initial_selection").offset().top;
-    initselect_scroll_top = initselect_scroll_top - 50;
-
-    // Animate search loader
-    $('html, body').stop().animate({
-      scrollTop: initselect_scroll_top
-    }, 300, function(){
-      $('#search_modal').modal('show');
+      $('.search-results').removeClass('show');
+      $('#status_update').html("<strong>Sorry :(</strong><br>  We can't find any result for the current selection. Please make sure that required data is entered.");
       $('.search_loader').addClass('show');
-    });
+      // Animate page scroll to selection top
+      let initselect_scroll_top = $("#initial_selection").offset().top;
+      initselect_scroll_top = initselect_scroll_top - 50;
+      let initselect_height = $('#initial_selection').height()+55;
+      let searchresults_height = $(window).height() - initselect_height - 15;
+        if( searchresults_height < 300){
+          searchresults_height = $(window).height() - 30;
+          initselect_height = 20;
+          $('#search_modal').css('z-index',99999);
+        }else{
+          $('#search_modal').css('z-index',1);
+        }
+      
+      $('#search_modal').css('margin-top',initselect_height+'px');
+      $('#search_modal').css('height',searchresults_height+'px');
 
-    get_search_results(search_selection);
-    
+      $('html, body').stop().animate({
+        scrollTop: initselect_scroll_top
+      }, 300, function(){
+        $('#search_modal').modal('show');
+      });
+    }
+
   });
 }
+
+ // Validate Search Parameters before search
+ function validate_search(){
+   console.log('validating...');
+   let active_tab = $('#initial_selection .tab-content .tab-pane.active').attr('id');
+   let validation = true;
+  
+   $('#'+active_tab+' input').each(function(index, item){
+     if ( $(this).val() == '' || typeof $(this).val() === 'undefined' ){
+        $(this).addClass('redfont');
+        validation = false;
+     }else{
+        $(this).removeClass('redfont');
+     }
+   });
+   console.log('validation: '+validation);
+   return validation;
+ }
+
+
 
   // Get Search Results
   function get_search_results( search_selection ){
@@ -470,7 +549,7 @@ function search_for_aircrafts(){
           typeof search_selection.legs[0].to_icao == 'undefined' || search_selection.legs[0].to_icao == ''){
             //clearTimeout(delay_results);
             $('.search-results').removeClass('show');
-            $('#status_update').html("<strong>Insufficient search parameters.</strong><br>  We can't find any result for the current selection. Please make sure that atleast the origin and destination airports are selected.");
+            $('#status_update').html("<strong>Sorry :(</strong><br>  We can't find any result for the current selection. Please make sure that required data is entered.");
             $('.search_loader').addClass('show');
         }else{
             console.log('Required fields are found');
@@ -482,6 +561,9 @@ function search_for_aircrafts(){
 
       }, 1000);
   }
+
+
+
 
     //AJAX Search Results
     function ajax_search_results(search_selection){
@@ -501,58 +583,13 @@ function search_for_aircrafts(){
             $('#status_update').html("Results not found for current selection");
           }else{
             $('.search_loader').removeClass('show');
-             
-            //Value Settings & Totals
-            let distance = parseFloat(data.totals.distance_nm);
-            let total_legs = search_selection.legs.length;
-            let total_time = 0;
-            let total_cost = 0;
-            let origin_airpot = 'N/A';
-            let destination_airpot = 'N/A';
-            let origin_time = 'N/A';
-            let destination_time = 'N/A';
-            let selected_currency = $('#currency_selector').val();
-            console.log('selected_curency:'+selected_currency);
-            let exchange_rate = parseFloat ( $('#currency_'+selected_currency).attr('cur_rate') );
-            if (!exchange_rate || exchange_rate<0 ){
-              exchange_rate = 1;
-            }
-
-            //Derives
-            origin_airpot = search_selection.legs[0].from_iata;
-            let destination_airport_index = total_legs-1;
-            destination_airpot = search_selection.legs[destination_airport_index].to_iata;
-
-
-            //UTC Timing...
-            let departure_dateandtime = new Date(search_selection.legs[0].departure_date);
-            let departure_dateandtime_utc = departure_dateandtime.getTime();
-            if ( isNaN(departure_dateandtime_utc) ){
-              departure_dateandtime = new Date();
-              departure_dateandtime.setHours(0,0,0,0);
-              departure_dateandtime_utc = departure_dateandtime.getTime();
-            }
-
-            console.log(departure_dateandtime_utc);
-            console.log(departure_dateandtime);
-
-            let origin_gmt = parseFloat(search_selection.legs[0].from_gmt);
-            let origin_gmt_utc = 
-                Math.trunc(origin_gmt)*60*60*1000 // Hours in UTC
-                + ( origin_gmt - Math.trunc(origin_gmt) )*60*1000; //Minutes in UTC
-            
-            let destination_gmt = parseFloat( search_selection.legs[destination_airport_index].to_gmt );
-            let destination_gmt_utc = 
-                Math.trunc(destination_gmt)*60*60*1000 // Hours in UTC
-                + ( destination_gmt - Math.trunc(destination_gmt) )*60*1000; //Minutes in UTC
-
-            
-            let destination_dateandtime_utc = departure_dateandtime_utc + origin_gmt_utc + destination_gmt_utc;
-            
 
             //Populate results for each aircraft
             $(aircrafts).each(function(index, item){
+              let flight_card_html = window.flight_info_card;
 
+              //Aircraft Category ID
+              flight_card_html = flight_card_html.replace('{{ac_id}}',index);
                //Aircraft Images
                flight_card_html = flight_card_html.replace('{{aircraft_image}}',item.ac_exterior_img);
                flight_card_html = flight_card_html.replace('{{aircraft_inner_image}}',item.ac_interior_img);
@@ -567,71 +604,47 @@ function search_for_aircrafts(){
                flight_card_html = flight_card_html.replace('{{contact_form_id}}','ac_contact_form'+item.id);
 
 
+               /**
+                * 
+                * Each leg specific calculations
+                * 
+                */
+               let legs_html = '';
 
-
-              //Calculations
-              let ac_range = parseFloat(item.ac_range);
-              let ac_speed = parseFloat(item.ac_speed);
-              let stops_needed = distance/ac_range;
-                  stops_needed = Math.ceil(stops_needed);
-                  if(stops_needed <= 0){
-                    stops_needed = 1;
-                  }
-              let delay_at_each_stop = stops_needed * item.ac_ground_mins;
-              let total_duration = (distance/ac_speed)*60+(delay_at_each_stop); // In minutes
-                let total_duration_hours = Math.floor(total_duration / 60);          
-                let total_duration_minutes = total_duration % 60;
-                    total_duration_minutes = Math.ceil(total_duration_minutes);
-
-              destination_dateandtime_utc = destination_dateandtime_utc + (total_duration*60*1000);
-              let destination_dateandtime = new Date(destination_dateandtime_utc);
-              let destination_time_hr = destination_dateandtime.getHours();
-              let destination_time_min = destination_dateandtime.getMinutes();
-
-              //Price
-              let price = ( item.ac_per_hr_fee*(distance/ac_speed) )  + ( item.ac_per_landing_fee * stops_needed );
-                  price = price + price * ( item.ac_additions/100 ); // with adjustable commissions
-                  price = price * exchange_rate; // Currency changed
-                  price = Math.ceil(price);
-
-              let flight_card_html = window.flight_info_card;
-
-              //Price
-              flight_card_html = flight_card_html.replace( '{{price}}', price.toLocaleString() );
-
-
-
-              /**
-               * Per leg calculations
-               */
-
-              let legs_html = '';
+               //One way
               if (search_selection.active_tab=='pills-one-way'){
-                let legs_timing_html =  window.legs_time_template;
-                //Airport info
-                let origin_time_hr = departure_dateandtime.getHours();
-                if (origin_time_hr<10){origin_time_hr=''+0+origin_time_hr};
+                  let leg_index = 0;
+                  legs_html = get_leg_html(search_selection.legs, item, data, leg_index);
               
-                let origin_time_min = departure_dateandtime.getMinutes();
-                if (origin_time_min<10){origin_time_min=''+0+origin_time_min};
-              
-                legs_timing_html = legs_timing_html.replace('{{departure_time}}',origin_time_hr+":"+origin_time_min);
-                legs_timing_html = legs_timing_html.replace('{{origin_iata}}',origin_airpot);
-              
-                if (destination_time_min<10){destination_time_min=''+0+destination_time_min};
-                if (destination_time_hr<10){destination_time_hr=''+0+destination_time_hr};
+              //Round Trip
+              }else if (search_selection.active_tab=='pills-round-trip'){
+                
+                let leg_index = 0;
+                // Initial Leg
+                legs_html = get_leg_html(search_selection.legs, item, data, leg_index);
+                //Return Leg
+                let init_from_iata = search_selection.legs[0].from_iata;
+                let init_from_gmt = search_selection.legs[0].from_gmt;
+                let init_to_iata = search_selection.legs[0].to_iata;
+                let init_to_gmt = search_selection.legs[0].to_gmt;
+                //Switching Values
+                search_selection.legs[0]["from_iata"] = init_to_iata;
+                search_selection.legs[0]["from_gmt"] = init_to_gmt;
+                search_selection.legs[0]["to_iata"] = init_from_iata;
+                search_selection.legs[0]["to_gmt"] = init_from_gmt;
+                search_selection.legs[0]["departure_date"] = search_selection.legs[0].return_date;
 
-                legs_timing_html = legs_timing_html.replace('{{arrival_time}}',destination_time_hr+":"+destination_time_min);
-                legs_timing_html = legs_timing_html.replace('{{destination_iata}}',destination_airpot);
+
+                legs_html += get_leg_html(search_selection.legs, item, data, leg_index);
+                
+              //Multi Leg
+              }else if (search_selection.active_tab=='pills-multi-leg'){
+                
+                let no_of_legs = data.legs.length;
+                for (i=0; i<no_of_legs; i++){
+                  legs_html += get_leg_html(search_selection.legs, item, data, i);
+                }
               
-                //Total Flight Time
-                if(total_duration_hours<10){total_duration_hours=''+0+total_duration_hours};
-                if(total_duration_minutes<10){total_duration_minutes=''+0+total_duration_minutes};
-
-                legs_timing_html = 
-                legs_timing_html.replace('{{total_duration}}',total_duration_hours+':'+total_duration_minutes);
-
-                legs_html = legs_timing_html;
               }
 
 
@@ -639,6 +652,16 @@ function search_for_aircrafts(){
               //Final HTML append to placeholder
               flight_card_html = flight_card_html.replace('{{legs_time_placeholder}}', legs_html);
               $('#search-results1').append(flight_card_html);
+
+              let price = 0;
+                $('#ac_'+index+' .leg_card').each(function(index,item){
+                  let leg_price = $(this).attr('leg_total_price');
+                  leg_price = parseInt(leg_price);
+                  price += leg_price;
+                });
+                $('#ac_'+index+' .total_price').html( price.toLocaleString() );
+                //flight_card_html = flight_card_html.replace( '{{price}}', price.toLocaleString() );
+              
             });
 
             $('.search-results').addClass('show');
@@ -654,6 +677,164 @@ function search_for_aircrafts(){
         }
       });
     }
+
+
+
+
+      var previous_leg_arrival_date;
+      var previous_leg_to_gmt;
+      function get_leg_html(legs, item, data, leg_index){
+        let leg = legs[leg_index];
+
+            let distance = parseFloat(data.legs[leg_index].distance_nm);
+            let total_legs = legs.length;
+            let total_time = 0;
+            let total_cost = 0;
+            let origin_airpot = 'N/A';
+            let destination_airpot = 'N/A';
+            let origin_time = 'N/A';
+            let destination_time = 'N/A';
+
+            //Value Settings & Totals
+            let selected_currency = $('#currency_selector').val();
+            console.log('selected_curency:'+selected_currency);
+            let exchange_rate = parseFloat ( $('#currency_'+selected_currency).attr('cur_rate') );
+            if (!exchange_rate || exchange_rate<0 ){
+              exchange_rate = 1;
+            }
+
+            //If no date for intermediate legs
+            if ( typeof leg.to_gmt == 'undefined' || !leg.to_gmt ){
+              leg['to_gmt'] = previous_leg_to_gmt;
+            }else{
+              previous_leg_to_gmt = leg.to_gmt;
+            }
+            if ( typeof leg.departure_date == 'undefined' || !leg.departure_date ){
+              leg["departure_date"] = previous_leg_arrival_date;
+            }
+
+
+        //Derives
+        origin_airpot = leg.from_iata;
+        destination_airpot = leg.to_iata;
+        
+
+
+        //UTC Timing...
+        let departure_dateandtime = new Date( leg.departure_date );
+        let t_departure_time = leg.departure_date +' '+ format_gmt_to_string(leg.from_gmt);
+        let departure_dateandtime_utc = new Date(t_departure_time).getTime();
+        let departure_date = departure_dateandtime.toLocaleString().split(',')[0];
+        
+        //Calculations
+        let ac_range = parseFloat(item.ac_range);
+        let ac_speed = parseFloat(item.ac_speed);
+        let stops_needed = distance/ac_range;
+            stops_needed = Math.ceil(stops_needed);
+            if(stops_needed <= 0){
+              stops_needed = 1;
+            }
+        let delay_at_each_stop = stops_needed * item.ac_ground_mins;
+        let total_duration = (distance/ac_speed)*60+(delay_at_each_stop); // In minutes
+          let total_duration_hours = Math.floor(total_duration / 60);          
+          let total_duration_minutes = total_duration % 60;
+              total_duration_minutes = Math.ceil(total_duration_minutes);
+
+        let total_duration_utc = total_duration*60*1000; //Miliseconds
+        let destination_time_utc = departure_dateandtime_utc + total_duration_utc + format_gmt_to_utc(leg.to_gmt);
+
+        let destination_dateandtime = parseTimestamp(destination_time_utc);
+          previous_leg_arrival_date = destination_dateandtime.toUTCString();
+        previous_leg_arrival_datetime = destination_dateandtime;
+        console.log('arrival time:'+destination_dateandtime);
+        let destination_time_hr = destination_dateandtime.getHours();
+        let destination_date = destination_dateandtime.toLocaleString().split(',')[0];
+        let destination_time_min = destination_dateandtime.getMinutes();
+
+            
+
+
+        //Price
+        let price = ( item.ac_per_hr_fee*(distance/ac_speed) )  + ( item.ac_per_landing_fee * stops_needed );
+            price = price + price * ( item.ac_additions/100 ); // with adjustable commissions
+            price = price * exchange_rate; // Currency changed
+            price = Math.ceil(price);
+
+
+        //Setting values on template
+        let legs_timing_html =  window.legs_time_template;
+        //Price
+        legs_timing_html = legs_timing_html.replace('{{leg_total}}',price);
+
+        //Airport info
+        let origin_time_hr = departure_dateandtime.getHours();
+        if (origin_time_hr<10){origin_time_hr=''+0+origin_time_hr};
+      
+        let origin_time_min = departure_dateandtime.getMinutes();
+        if (origin_time_min<10){origin_time_min=''+0+origin_time_min};
+      
+        legs_timing_html = legs_timing_html.replace('{{departure_time}}',origin_time_hr+":"+origin_time_min);
+        legs_timing_html = legs_timing_html.replace('{{departure_date}}',departure_date);
+        legs_timing_html = legs_timing_html.replace('{{origin_iata}}',origin_airpot);
+      
+        if (destination_time_min<10){destination_time_min=''+0+destination_time_min};
+        if (destination_time_hr<10){destination_time_hr=''+0+destination_time_hr};
+
+        legs_timing_html = legs_timing_html.replace('{{arrival_time}}',destination_time_hr+":"+destination_time_min);
+        legs_timing_html = legs_timing_html.replace('{{arrival_date}}',destination_date);
+        legs_timing_html = legs_timing_html.replace('{{destination_iata}}',destination_airpot);
+      
+        //Total Flight Time
+        if(total_duration_hours<10){total_duration_hours=''+0+total_duration_hours};
+        if(total_duration_minutes<10){total_duration_minutes=''+0+total_duration_minutes};
+
+        legs_timing_html = 
+        legs_timing_html.replace('{{total_duration}}',total_duration_hours+':'+total_duration_minutes);
+
+        
+          console.log("origin: "+origin_airpot);
+          console.log("Destination: "+destination_airpot);
+          
+          if (leg.from_iata != leg.to_iata){
+            return legs_timing_html;
+          }else{
+            return '';
+          }
+      }
+
+        //Format GMT
+        function format_gmt_to_string(gmt){
+          let x = gmt.split('.');
+          let gmt_h = parseInt(x[0]);
+          let gmt_m = x[1];
+
+          let gmt_sign = 'GMT+';
+          if (gmt_h<0){gmt_sign='GMT-'}
+          if (gmt_h<10){gmt_h='0'+gmt_h}
+          if (gmt_m && gmt_m.length<2){
+            gmt_m='0'+gmt_m;
+          }else if(!gmt_m){
+            gmt_m='00';
+          }
+
+          return (gmt_sign+gmt_h+gmt_m);
+        }
+
+        function format_gmt_to_utc(gmt){
+          let x = parseFloat(gmt);
+          let gmt_h = Math.floor(gmt);
+          let gmt_m = x - gmt_h;
+
+          let gmt_utc = (gmt_h*60 + gmt_m)*60*1000;
+          console.log('destination gmt to utc:'+gmt_utc);
+
+          return (gmt_utc);
+        }
+
+        //Gives time without user gmt affecting
+        function parseTimestamp(timestampStr) {
+          return new Date(new Date(timestampStr).getTime() + (new Date(timestampStr).getTimezoneOffset() * 60 * 1000));
+        };
 
 
 //--- jQuery No Conflict

@@ -201,7 +201,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete one2 leg_from" placeholder="From" />
+                    <input type="text" class="form-control autocompletex one2 leg_from" placeholder="From" />
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/takeoff-the-plane.svg" alt="" /></span>
                 </div> 
             </div> 
@@ -209,7 +209,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
         <div class="col-6">
             <div class="form-group">
                 <div class="field">
-                    <input type="text" class="form-control autocomplete two2 leg_to" placeholder="Where to?" />
+                    <input type="text" class="form-control autocompletex two2 leg_to" placeholder="Where to?" />
                     <span class="icon-span"><img class="image1" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /><img class="image2" src="'.$plugin_url.'assets/images/plane-landing.svg" alt="" /></span>
                 </div> 
             </div>
@@ -277,7 +277,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
 </div>';
 
 
-$flight_info_card = '<div class="card-result aircraft_card" id="">
+$flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
 <div class="top-result">
     <div class="row no-gutters">
         <div class="col-lg-7">
@@ -307,7 +307,7 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
                     <div class="inquiry-info">
 
                         <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#{{contact_form_link}}" aria-expanded="false">
-                            <strong>{{price}}*</strong>
+                            <strong><span class="total_price">0</span>*</strong>
                             <span>Inquiry</span>
                         </a>
 
@@ -365,9 +365,10 @@ $flight_info_card = '<div class="card-result aircraft_card" id="">
 </div>
 </div>';
 
-$legs_time_template = '<div class="detail-card-footer row no-gutters">
+$legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" leg_total_price="{{leg_total}}">
 <div class="col">
     <div class="time">{{departure_time}}</div>
+    <div class="ac_date">{{departure_date}}</div>
     <div class="loc">{{origin_iata}}</div>
 </div>
 <div class="img-flight">
@@ -376,6 +377,7 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters">
 </div>
 <div class="col">
     <div class="time">{{arrival_time}}</div>
+    <div class="ac_date">{{arrival_date}}</div>
     <div class="loc">{{destination_iata}}</div>
 </div>
 </div>';
@@ -392,7 +394,6 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters">
         var flight_info_card = `<?= $flight_info_card ?>`;
         var legs_time_template = `<?= $legs_time_template ?>`;
         var aircrafts = <?= $aircrafts ?>;
-        console.log(aircrafts);
     </script>
 </div>
 
@@ -488,9 +489,9 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters">
 
 <!-- Modal Window -->
 <div class="modal fade  search-modal" id="search_modal">
+    <div class="modal_close"><i class="fa fa-times"></i></div>
     <div class="modal modal-dialog modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal_close"><i class="fa fa-times"></i></div>
             
             <div class=" search-modal" id="results_modal">
 
