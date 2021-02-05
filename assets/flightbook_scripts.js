@@ -65,17 +65,28 @@ function onload_settings(){
 
     //Currency values from google finance api
     $.ajax({     
-      url: "http://data.fixer.io/api/latest?access_key=1495fc83ad76e1ecfdd2e8773e9af9a2&symbols=GBP,USD",
+      url: "http://data.fixer.io/api/latest?access_key=1495fc83ad76e1ecfdd2e8773e9af9a2",
       method: "GET",
       success: function(data)
       {   
         console.log('Loading currency conversions from api...');
         console.log(data);
         if (typeof data.rates["GBP"] !== 'undefined' && typeof data.rates["USD"] !== 'undefined'){
-          let usd_to_eur = 1/data.rates["USD"];
-          let usd_to_gbp = usd_to_eur*data.rates["GBP"];
-          $('#currency_eur').attr('cur_rate',usd_to_eur);
-          $('#currency_gbp').attr('cur_rate',usd_to_gbp);
+          
+          for ( var i in data.rates){
+            let key = i;
+            i = i.toLowerCase();
+            if (i == 'eur' || i=="gbp" || i=="usd"){
+              $('#currency_'+i).attr('cur_rate', data.rates[key] );
+              $('#currency_'+i).val( i );
+            }else{
+              let cur_option = '<option cur_rate="'+data.rates[key]+'" value="'+i+'">'+i.toUpperCase()+'</option>';
+              $('#currency_selector').append(cur_option);
+            }
+          }
+
+          set_currency_change();
+
         }else{
           alert ('currency converter api error!');
         }
@@ -94,8 +105,30 @@ function onload_settings(){
     });
 }
 
+  // On currency change
+  function set_currency_change(){
 
+    $('#currency_selector').off().on('change', function(){
+      console.log('currency changed');
+      let n = $('.total_price').length;
+      let rate = parseFloat ( $('#currency_selector option:selected').attr('cur_rate') );
 
+      if (n>0){
+
+        $('.total_price').each(function(){
+
+          let total = parseInt( $(this).attr('price_in_eur') );
+          let new_total = Math.ceil(total*rate);
+          console.log('total:'+total);
+          console.log('new total:'+new_total);
+          $(this).html( new_total.toLocaleString() );
+        });
+      }      
+    });
+
+    $("#currency_selector").select2("destroy");
+    $("#currency_selector").select2();    
+  }
 
 
 
@@ -127,8 +160,8 @@ function ui_functions(){
       current_row.find('.leg_from').attr('selected_icao',current_row_to_icao);
       current_row.find('.leg_from').attr('selected_gmt',current_row_to_gmt);
       current_row.find('.leg_to').val(current_row_from_iata);
-      current_row.find('.leg_to').attr('selected_icao',current_row_to_icao);
-      current_row.find('.leg_to').attr('selected_gmt',current_row_to_gmt);
+      current_row.find('.leg_to').attr('selected_icao',current_row_from_icao);
+      current_row.find('.leg_to').attr('selected_gmt',current_row_from_gmt);
   });
 
   //Tooltip Settings
@@ -242,7 +275,7 @@ function autocomplete_js(){
     function selectIndex(index) {
       if ( (results.length >= index + 1) && use_ajax ) { //For ajax
         ac.val(results[index].codeIataAirport);
-        console.log(results[index].codeIataAirport);
+        //console.log(results[index].codeIataAirport);
         clearResults();
       }else if ( (results.length >= index + 1) && !use_ajax ) { //For fuse
         ac.val(results[index].item.codeIataAirport);
@@ -661,20 +694,38 @@ function search_for_aircrafts(){
               flight_card_html = flight_card_html.replace('{{legs_time_placeholder}}', legs_html);
               $('#search-results1').append(flight_card_html);
 
-              let price = 0;
+
+              //PRICING
+              let price = 0; // In USD
                 $('#ac_'+index+' .leg_card').each(function(index,item){
                   let leg_price = $(this).attr('leg_total_price');
                   leg_price = parseInt(leg_price);
                   price += leg_price;
                 });
-                $('#ac_'+index+' .total_price').html( price.toLocaleString() );
-                //flight_card_html = flight_card_html.replace( '{{price}}', price.toLocaleString() );
-              
+
+                let usd_exchange_rate = parseFloat( $('#currency_usd').attr('cur_rate') );
+                let price_in_eur = price * (1/usd_exchange_rate);
+                $('#ac_'+index+' .total_price').attr( 'price_in_eur', price_in_eur );
+                //Selected Currency
+                let selected_exchange_rate = parseFloat ( $('#currency_selector option:selected').attr('cur_rate') );;
+
+                let price_in_selected_currency = (price_in_eur * selected_exchange_rate);
+                    price_in_selected_currency = Math.ceil(price_in_selected_currency);
+                $('#ac_'+index+' .total_price').html( price_in_selected_currency.toLocaleString() );
+
+                
+                console.log('price:'+price);
+                console.log('usd exchange rate:'+usd_exchange_rate);
+                console.log('price in eur:'+price_in_eur);
+                console.log('selected exchange rate:'+selected_exchange_rate);
+                console.log('price_in_selected_currency'+price_in_selected_currency);
+               /* */
             });
 
             $('.search-results').addClass('show');
             //Refresh
-            $('i').tooltip(); 
+            $('i').tooltip();
+            set_currency_change();
           }
         },
 
@@ -703,13 +754,6 @@ function search_for_aircrafts(){
             let origin_time = 'N/A';
             let destination_time = 'N/A';
 
-            //Value Settings & Totals
-            let selected_currency = $('#currency_selector').val();
-            console.log('selected_curency:'+selected_currency);
-            let exchange_rate = parseFloat ( $('#currency_'+selected_currency).attr('cur_rate') );
-            if (!exchange_rate || exchange_rate<0 ){
-              exchange_rate = 1;
-            }
 
             //If no date for intermediate legs
             if ( typeof leg.to_gmt == 'undefined' || !leg.to_gmt ){
@@ -765,7 +809,6 @@ function search_for_aircrafts(){
         //Price
         let price = ( item.ac_per_hr_fee*(distance/ac_speed) )  + ( item.ac_per_landing_fee * stops_needed );
             price = price + price * ( item.ac_additions/100 ); // with adjustable commissions
-            price = price * exchange_rate; // Currency changed
             price = Math.ceil(price);
 
 
