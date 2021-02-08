@@ -203,6 +203,8 @@ class flightBook
          //Fuse
          wp_enqueue_script( 'airports_scripts', plugins_url('/assets/fuse.js/airports.js',__FILE__));
          wp_enqueue_script( 'fuse_scripts', plugins_url('/assets/fuse.js/fuse.js',__FILE__), array('airports_scripts'));
+         //DateJS
+         wp_enqueue_script( 'flightbook_momentjs', plugins_url('/assets/momentjs/momentjs.js',__FILE__), array('jquery'));
          //Custom
          $color='gray';
          if ( $color=='gray' ){

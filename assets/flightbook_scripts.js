@@ -409,12 +409,13 @@ function autocomplete_js(){
         }
 
         var divs = results.map(function(r, i) {
-          //console.log(r);
-          return '<div class="autocomplete-result" data-index="'+ i +'">'
+          if ( typeof r.item.codeIcaoAirport !== 'undefined' && r.item.codeIcaoAirport != ''){ // show only results with icao
+            return '<div class="autocomplete-result" data-index="'+ i +'">'
               + '<div><b>'+ r.item.codeIataAirport +', <span class="icaocode">'+ r.item.codeIcaoAirport+'</span></b> - '+ r.item.nameAirport +'</div>'
               + '<div class="autocomplete-location">'+ r.item.codeIso2Country +', '+ r.item.nameCountry +'</div>'
               + '</div>';
-        });
+            } 
+          });
 
         selectedIndex = -1;
         list.html(divs.join(''))
@@ -653,7 +654,7 @@ function search_for_aircrafts(){
                let legs_html = '';
 
                //One way
-              if (search_selection.active_tab=='pills-one-way'){
+              if (search_selection.active_tab=='pills-one-way' || search_selection.active_tab=='pills-empty-leg' ){
                   let leg_index = 0;
                   legs_html = get_leg_html(search_selection.legs, item, data, leg_index);
               
@@ -773,10 +774,16 @@ function search_for_aircrafts(){
 
 
         //UTC Timing...
-        let departure_dateandtime = new Date( leg.departure_date );
-        let t_departure_time = leg.departure_date +' '+ format_gmt_to_string(leg.from_gmt);
+        let departure_dateandtime = leg.departure_date;
+        departure_dateandtime = departure_dateandtime.split("-").join("/");
+        departure_dateandtime_moment = moment(departure_dateandtime).format("YYYY/MM/DD HH:mm:ss");
+        departure_dateandtime = new Date( departure_dateandtime_moment );
+        let t_departure_time = departure_dateandtime_moment +' '+ format_gmt_to_string(leg.from_gmt);
         let departure_dateandtime_utc = new Date(t_departure_time).getTime();
         let departure_date = departure_dateandtime.toLocaleString().split(',')[0];
+
+        console.log('departure_time:'+departure_dateandtime);
+        console.log('departure_datetime_utc:'+departure_dateandtime_utc);
         
         //Calculations
         let ac_range = parseFloat(item.ac_range);
@@ -794,8 +801,9 @@ function search_for_aircrafts(){
 
         let total_duration_utc = total_duration*60*1000; //Miliseconds
         let destination_time_utc = departure_dateandtime_utc + total_duration_utc + format_gmt_to_utc(leg.to_gmt);
-
+        console.log('Destination time utc: '+destination_time_utc);
         let destination_dateandtime = parseTimestamp(destination_time_utc);
+        console.log('Destination time: '+destination_dateandtime);
           previous_leg_arrival_date = destination_dateandtime.toUTCString();
         previous_leg_arrival_datetime = destination_dateandtime;
         console.log('arrival time:'+destination_dateandtime);
@@ -859,8 +867,8 @@ function search_for_aircrafts(){
           let gmt_h = parseInt(x[0]);
           let gmt_m = x[1];
 
-          let gmt_sign = 'GMT+';
-          if (gmt_h<0){gmt_sign='GMT-'}
+          let gmt_sign = '+';
+          if (gmt_h<0){gmt_sign='-'}
           if (gmt_h<10){gmt_h='0'+gmt_h}
           if (gmt_m && gmt_m.length<2){
             gmt_m='0'+gmt_m;
@@ -868,7 +876,7 @@ function search_for_aircrafts(){
             gmt_m='00';
           }
 
-          return (gmt_sign+gmt_h+gmt_m);
+          return (gmt_sign+gmt_h+':'+gmt_m);
         }
 
         function format_gmt_to_utc(gmt){

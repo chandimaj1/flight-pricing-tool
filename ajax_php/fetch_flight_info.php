@@ -4,13 +4,7 @@
 $active_tab = $_POST["active_tab"];
 //echo ($active_tab);
 $route = '';
-if ($active_tab=='pills-one-way'){
-    $route = $_POST["legs"][0]["from_icao"].'-'.$_POST["legs"][0]["to_icao"];
-}else if ($active_tab=='pills-round-trip'){
-    $route = $_POST["legs"][0]["from_icao"].'-'.$_POST["legs"][0]["to_icao"];
-
-//Multi Leg    
-}else if ($active_tab=='pills-multi-leg'){
+if ($active_tab=='pills-multi-leg'){
 
   $i = 0;
   foreach ( $_POST["legs"] as $leg ){
@@ -28,6 +22,8 @@ if ($active_tab=='pills-one-way'){
 
     $i++;
   }
+}else{
+  $route = $_POST["legs"][0]["from_icao"].'-'.$_POST["legs"][0]["to_icao"];
 }
 
 //var_dump ($route);

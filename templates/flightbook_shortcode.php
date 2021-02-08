@@ -419,11 +419,12 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
                     </ul>
                 </div>
                 <div class="country-flight">
-                    <ul>
-                        <li><a ><img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /></a></li>
-                        <li><a ><img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /></a></li>
-                        <li><a ><img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /></a></li>
-                        <li><a ><img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /></a></li>
+                    <ul id="language_select" selected_language="en">
+                        <li><a class='en' ><img src="<?= $plugin_url ?>assets/images/uk.png" alt="" /></a></li>
+                        <li><a class='afganistan' ><img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /></a></li>
+                        <li><a class='albania'><img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /></a></li>
+                        <li><a class='uae'><img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /></a></li>
+                        <li><a class='andorra'><img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /></a></li>
                     </ul>
                     <div class="currency-dropdown">
                         <select class="templatingSelect2" id="currency_selector"> 
