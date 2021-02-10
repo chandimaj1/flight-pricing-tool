@@ -33,6 +33,7 @@ global $wpdb;
     <span>-FlightBook Pluggin by ChandimaJ</span></h2>
     
     <h4>Aircraft Categories</h4>
+    <hr>
         <input id="ac_file_upload" type="file" style="display:none;"/>
         <table id="ac_table" class="table-responsive table-sm table-striped">
             <thead class="thead-dark">
@@ -93,6 +94,105 @@ global $wpdb;
         </table>
 </div>
 
+<!--
+    Plugin Settings
+-->
+
+<div class="container-fluid" style="margin-top:50px">
+    <h4>Plugin Settings</h4>
+    <hr>
+    <div class="row" id="settings_row">
+    </div> 
+</div>
+
+
+<!--
+    Language Settings
+-->
+
+<div class="container-fluid" style="margin-top:50px">
+    <h4>Languages</h4>
+    <hr>
+    <div class="row" id="language_select_row">
+
+<?php
+$table_name = $wpdb->prefix."flightbook_languages";
+$sql = "SELECT DISTINCT * FROM $table_name";
+$result = $wpdb->get_results( $sql );
+    
+$msg = "fail";
+
+if($result){
+    $tabs = '';
+    foreach ($result as $row){
+
+        $lg_class = "btn-secondary";
+        if ($row->id == "1"){
+            $lg_class = "btn-primary";
+        }
+
+        $tabs .= ("<button class='lang_tab_link btn $lg_class' lang_id='$row->id' > $row->language </button>");
+    }
+?>
+
+        <div class="col-md-3">
+            <div><strong>Select language to modify:</strong></div>
+        </div>
+        <div class="col-md-6" id="language_tabs">
+            <?= $tabs ?>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-success" id="update_language">Update Language</button>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-sm-12" id="language_settings">
+
+        <?php
+            foreach ($result as $rows){
+                $lg_active = "";
+                if ($rows->id == "1"){
+                    $lg_active = "lg_active";
+                }
+        ?>
+            
+             <div class='lang_tab <?= $lg_active ?>' lang_name="<?= $rows->language ?>" id='lang_tab<?= $rows->id ?>'>
+             <?php
+             foreach ($rows as $key=>$row){
+                 if( $key != 'id' && $key != 'language'){
+             ?>
+                <div class="row">
+                    <div class="col-sm-4"><?= $key ?></div>
+                    <div class="col-sm-8">
+                        <input type="text" class="lang_row_set form-control" row_key="<?= $key ?>"   value="<?= $row ?>" />
+                    </div>
+                </div>
+             <?php
+                }
+             }
+             ?>
+            </div>
+        <?php
+            }
+        ?>
+
+        </div>
+<?php
+    
+
+}else{
+    echo ('<h3> Could not fetch results from the languages database !</h3>');
+}
+?>
+
+    </div>
+</div>
+
+
+
+
+
 
 <div class="modal fade" id="ac_img_viewer" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -113,4 +213,8 @@ global $wpdb;
     </div>
   </div>
 </div>
+
+
+
+
 

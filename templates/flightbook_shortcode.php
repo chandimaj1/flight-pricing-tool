@@ -27,6 +27,27 @@ if (! defined( 'ABSPATH') ){
         $aircrafts = json_encode("{message:'error'}");
     }
 
+
+
+    $table_name = $wpdb->prefix."flightbook_languages";
+    $sql = "SELECT DISTINCT * FROM $table_name";
+    $result = $wpdb->get_results( $sql );
+    
+    if($result){ 
+        $msg= "success";
+        $languages = array();
+        foreach ($result as $row){
+            $languages[$row->language] = $row;
+        }
+        $languages = json_encode($languages);
+    }else{
+        $msg="failed";
+        $languages = json_encode("{message:'error'}");
+    }
+
+
+
+
 //Normal Leg row template
 $leg_row_normal = '
 <div class="row no-gutters leg_row">
@@ -68,7 +89,7 @@ $leg_row_normal = '
                 <div class="form-group">
                     <div class="field">
                         <select class="templatingSelect2 leg_no_of_passengers"> 
-                            <option selected value="passenger">Passenger </option>
+                            <option selected value="0" class="default_passenger">Passengers</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -156,7 +177,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
                 <div class="form-group">
                     <div class="field">
                         <select class="templatingSelect2 leg_no_of_passengers"> 
-                            <option selected="">Passenger </option>
+                            <option selected value="0" class="default_passenger">Passengers</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -234,7 +255,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                 <div class="form-group">
                     <div class="field">
                         <select class="templatingSelect2 leg_no_of_passangers multi_select2"> 
-                            <option selected="" value="0">Passenger </option>
+                            <option selected value="0" class="default_passenger">Passengers</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -298,7 +319,7 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
             <div class="detail-card">
                 <div class="media">
                     <div class="media-body">
-                        <h3> {{aircraft_type}}  <i data-toggle="tooltip" data-placement="top" title="{{aircraft_desc}}"><img src="'.$plugin_url.'assets/images/question-circle.svg" alt=""></i></h3>
+                        <h3> <span class="ac_category_name">{{aircraft_type}}</span>  <i data-toggle="tooltip" data-placement="top" title="{{aircraft_desc}}"><img src="'.$plugin_url.'assets/images/question-circle.svg" alt=""></i></h3>
                         <span class="badge-passanger">
                             <i><img src="'.$plugin_url.'assets/images/user-white.svg" alt=""></i>
                             {{pax_capacity}}
@@ -308,10 +329,10 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
 
                         <a class="btn cta-primary cta-inquiry" data-toggle="collapse" href="#{{contact_form_link}}" aria-expanded="false">
                             <strong><span class="total_price" price_in_eur="0">0</span>*</strong>
-                            <span>Inquiry</span>
+                            <span class="ac_lang_inquiry">Inquiry</span>
                         </a>
 
-                        <p>*Estimated price before taxes & fees.</p>
+                        <p>*<span class="ac_lang_pricefooter">Estimated price before taxes & fees.</span></p>
                     </div>
                 </div>
 
@@ -321,7 +342,7 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
     </div>
     <div class="collapse" id="{{contact_form_id}}">
         <form action="" class="contact-detail">
-            <p>Please provide your contact details here.</p>
+            <p class="contact_form_title">Please provide your contact details here.</p>
             <div class="row">
                 <div class="col-lg-4">
                     <div class="form-group">
@@ -357,7 +378,9 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
                 </div>
             </div>
             <div class="text-right">
-                <button class="btn cta-primary send_inquiry">Send Inquiry</button>
+                <div class="btn brn_search send_inquiry">Send Inquiry</div>
+                <div class="inquirymsg_success inquiry_msg">Message sent !</div>
+                <div class="inquirymsg_fail inquiry_msg">Message not sent. Please make sure you have entered a valid email address.</div>
             </div>
         </form>
     </div>
@@ -394,6 +417,7 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
         var flight_info_card = `<?= $flight_info_card ?>`;
         var legs_time_template = `<?= $legs_time_template ?>`;
         var aircrafts = <?= $aircrafts ?>;
+        var ac_lang = <?= $languages ?>;
     </script>
 </div>
 
@@ -401,8 +425,8 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
 <div class="search-modal" id="initial_selection">
     <div class=" modal-dialog modal-dialog" role="document">
         <div class="modal-content">
-            <div class="flight-book-top">
-                <div class="table-responsive">
+            <div class="flight-book-top row">
+                <div class="table-responsive col-lg-8 col-md-7 col-sm-12">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-one-way-tab" data-toggle="pill" href="#pills-one-way" role="tab" aria-controls="pills-one-way" aria-selected="true">One Way</a>
@@ -418,15 +442,15 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
                         </li>
                     </ul>
                 </div>
-                <div class="country-flight">
-                    <ul id="language_select" selected_language="en">
-                        <li><a class='en' ><img src="<?= $plugin_url ?>assets/images/uk.png" alt="" /></a></li>
-                        <li><a class='afganistan' ><img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /></a></li>
-                        <li><a class='albania'><img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /></a></li>
-                        <li><a class='uae'><img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /></a></li>
-                        <li><a class='andorra'><img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /></a></li>
+                <div class="country-flight col-lg-4 col-md-5 col-sm-12">
+                    <ul id="language_select" class="col-sm-7 col-xs-7" selected_language="en">
+                        <li><a class='en' ac_lang="english" > <i data-toggle="tooltip" data-placement="top" title="English"> <img src="<?= $plugin_url ?>assets/images/uk.png" alt="" /> </i> </a></li>
+                        <li><a class='afganistan' ac_lang="afganistan" > <i data-toggle="tooltip" data-placement="top" title="Afganistan"> <img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /> </i> </a></li>
+                        <li><a class='albania' ac_lang="albania" ><i data-toggle="tooltip" data-placement="top" title="Albania"> <img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /> </i> </a></li>
+                        <li><a class='uae' ac_lang="uae" ><i data-toggle="tooltip" data-placement="top" title="UAE"> <img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /> </i> </a></li>
+                        <li><a class='andorra'ac_lang="andorra" ><i data-toggle="tooltip" data-placement="top" title="Andorra"> <img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /> </i> </a></li>
                     </ul>
-                    <div class="currency-dropdown">
+                    <div class="currency-dropdown col-sm-5 col-xs-5">
                         <select class="templatingSelect2" id="currency_selector"> 
                             <option id="currency_usd" selected cur_rate='1'> USD (&dollar;)</option>
                             <option id="currency_eur" cur_rate='1'>EUR (&euro;)</option>
@@ -498,9 +522,9 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
 
                 <!-- Loader -->
                 <div class="search_loader fade show">
-                    <span id="status_update"></span><br>
+                    <span id="status_update" default_note=" We can&#39;t find any result for the current selection. Please make sure that required data is entered."></span><br>
                     <img src="<?= $plugin_url ?>assets/images/loader_grey.png" />
-                    <p>Please wait while we source the available aircraft</p>
+                    <p class="searching_notice">Please wait while we source the available aircraft</p>
                 </div>
 
 

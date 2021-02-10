@@ -1,4 +1,22 @@
 <?php
+require_once('../../../../wp-load.php');
+if (!isset($wpdb)){
+    $msg = 'Error loading wpdb';
+    echo ($msg);
+    die();
+}
+
+$table_name = $wpdb->prefix."flightbook_settings";
+$sql = "SELECT greatcircle_api_key,greatcircle_api_host FROM $table_name WHERE id=1";
+$result = $wpdb->get_results( $sql );
+
+if ($result){
+  $greatcircle_api_key = $result[0]->greatcircle_api_key;
+  $greatcircle_api_host = $result[0]->greatcircle_api_host;
+}else{
+  $greatcircle_api_key = "0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb";
+  $greatcircle_api_host = "greatcirclemapper.p.rapidapi.com";
+}
 
 //var_dump($_POST);
 $active_tab = $_POST["active_tab"];
@@ -30,6 +48,11 @@ if ($active_tab=='pills-multi-leg'){
 //echo ($route);
 function curl_results($route){
     $curl = curl_init();
+    global $greatcircle_api_key;
+    global $greatcircle_api_host;
+
+    $api_key_string = "x-rapidapi-key: $greatcircle_api_key";
+    $api_host_string = "x-rapidapi-host: $greatcircle_api_host";
 
     curl_setopt_array($curl, array(
       CURLOPT_URL => "https://greatcirclemapper.p.rapidapi.com/airports/route/$route/400",
@@ -43,8 +66,8 @@ function curl_results($route){
       CURLOPT_HTTPHEADER => array(
         'content-type: text/html;charset=UTF-8',
         'vary: Accept-Encoding',
-        'x-rapidapi-key: 0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb',
-        'x-rapidapi-host: greatcirclemapper.p.rapidapi.com'
+        "x-rapidapi-key: $greatcircle_api_key",
+        "x-rapidapi-host: $greatcircle_api_host"
       ),
     ));
     

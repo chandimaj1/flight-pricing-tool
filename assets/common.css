@@ -170,3 +170,29 @@
     transform : scale(1.2);
     opacity: .8;
 }
+
+#language_select{
+    margin-bottom: 0;
+}
+
+.country-flight{
+    margin-bottom: 0 !important;
+}
+
+#currency_selector{
+    width: 120px;
+}
+
+@media (min-width: 768px){
+    .search-modal .flight-book-top .country-flight {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        width: 100%;
+        justify-content: flex-end;
+        }
+}
+
+.tooltip {
+    position: fixed;
+}

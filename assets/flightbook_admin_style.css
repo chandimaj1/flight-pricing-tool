@@ -73,3 +73,29 @@
     background-color:#c66;
     pointer-events: none;
 }
+
+.lang_tab_link{
+    display: inline;
+    margin-left:2px;
+}
+
+#language_select_row{
+    margin-bottom:10px; 
+    background-color:#eee; 
+    padding:5px; 
+    border-radius:5px
+}
+
+.lang_tab{
+    display: none;
+    padding: 15px;
+    pointer-events: none;
+}
+.lang_tab.lg_active{
+    display: block;
+    pointer-events: auto;
+}
+.lg_active.redback input{
+    pointer-events: none;
+    background-color: #ccc;
+}

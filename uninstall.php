@@ -23,3 +23,7 @@ delete_option("flightbook_aircrafts_db");
 $table_name = $wpdb->prefix."flightbook_settings";
 $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
 delete_option("flightbook_settings_db");
+
+$table_name = $wpdb->prefix."flightbook_languages";
+$wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+delete_option("flightbook_languages_db");

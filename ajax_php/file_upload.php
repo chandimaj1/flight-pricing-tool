@@ -1,11 +1,5 @@
 <?php
 
-require_once('../../../../wp-load.php');
-if (!isset($wpdb)){
-    $msg = 'Error loading wpdb';
-    echo ($msg);
-    die();
-}
 //var_dump($_POST);
 
 $row_id = (int)$_POST["ac_row"];

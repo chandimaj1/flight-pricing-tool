@@ -5,6 +5,7 @@
 var ajax_url = '/wp-content/plugins/flight_booking/ajax_php/';
 var delayTimer;
 var use_ajax = false;
+var selected_language = 'english';
 
 /**
  * 
@@ -18,8 +19,8 @@ var use_ajax = false;
 
 $(document).ready(function() {
   console.log('Flighbook Shortcode JavaScripts Loaded');
-  console.log('Loaded Airports from Database:');
-  console.log(window.airports);
+  //console.log(window.ac_lang);
+  //console.log(window.airports);
 
   var results = [];
 
@@ -28,6 +29,7 @@ $(document).ready(function() {
 
   //UI functions
   ui_functions();
+  language_select(); // Load default language text
 
   //Functions
   autocomplete_js();  //-- Autocomplete airports (Search)
@@ -65,10 +67,11 @@ function onload_settings(){
 
     //Currency values from google finance api
     $.ajax({     
-      url: "http://data.fixer.io/api/latest?access_key=1495fc83ad76e1ecfdd2e8773e9af9a2",
+      url: ajax_url+"get_prices.php",
       method: "GET",
       success: function(data)
       {   
+        data = JSON.parse(data);
         console.log('Loading currency conversions from api...');
         console.log(data);
         if (typeof data.rates["GBP"] !== 'undefined' && typeof data.rates["USD"] !== 'undefined'){
@@ -171,9 +174,11 @@ function ui_functions(){
   $(".selector, .selector2").flatpickr({
     //mode: "range",
     minDate: "today",
-    dateFormat: "d-m-Y H:i",
+    dateFormat: "Y-m-d H:i",
+    minuteIncrement: 10,
     enableTime: true, 
-    disableMobile: "true"
+    disableMobile: "true",
+    time_24hr: true,
   });
 
   $('.multi_select2').select2();
@@ -198,8 +203,76 @@ function ui_functions(){
     }
   });
 
+
+  //Language Select
+  $('#language_select li a').on('click', function(){
+    let clicked_lang = $(this).attr('ac_lang');
+    language_select(clicked_lang);
+  });
+
 }
 
+
+
+/**
+ * 
+ * 
+ * Language Select
+ */
+
+ function language_select(lang){
+   console.log('Language Select')
+
+  if (lang != '' && typeof lang !== 'undefined'){
+    selected_language = lang;
+  }else if( selected_language == ''){
+    selected_language = 'english'
+  }
+  let lg = window.ac_lang[selected_language];
+
+  //Setting Language
+
+  //Pill Titles
+  $('#pills-one-way-tab').html(lg.pill_title_oneway);
+  $('#pills-round-trip-tab').html(lg.pill_title_roundtrip);
+  $('#pills-multi-leg-tab').html(lg.pill_title_multileg);
+  $('#pills-empty-leg-tab').html(lg.pill_title_emptyleg);
+
+  //Search Section
+  $('.leg_from').attr('placeholder',lg.search_field_from);
+  $('.leg_to').attr('placeholder',lg.search_field_whereto);
+  $('.leg_departure_date').attr('placeholder',lg.search_field_departuredate);
+  $('.leg_return_date').attr('placeholder',lg.search_field_returndate);
+  $('.default_passenger').html(lg.search_field_passenger);
+  $('.search_btn').html(lg.search_button_search);
+
+  //Resutls Card
+  //--Airplanes
+  $('.ac_category_name').eq(0).html(lg.results_card_turboprop);
+  $('.ac_category_name').eq(1).html(lg.results_card_lightjets);
+  $('.ac_category_name').eq(2).html(lg.results_card_midsize);
+  $('.ac_category_name').eq(3).html(lg.results_card_supermid);
+  $('.ac_category_name').eq(4).html(lg.results_card_heavyprivate);
+  $('.ac_category_name').eq(5).html(lg.results_card_vipairliners);
+
+  //--Inquiry
+  $('.ac_lang_inquiry').html(lg.results_card_inquiry);
+  $('.ac_lang_pricefooter').html(lg.results_card_pricefooter);
+
+  //--Contact Form
+
+  $('.contact_form_title').html(lg.contact_form_title);
+  $('.contact_name').attr('placeholder',lg.contact_form_name);
+  $('.contact_email').attr('placeholder',lg.contact_form_email);
+  $('.contact_phone').attr('placeholder',lg.contact_form_phone);
+  $('.contact_requirements').attr('placeholder',lg.contact_form_requirements);
+  $('.send_inquiry').html(lg.contact_form_button_send);
+
+  //Messages
+  $('.searching_notice').html(lg.searching_notice);
+  $('#status_update').attr('default_note',lg.search_error_note);
+
+ }
 
 
 
@@ -444,7 +517,7 @@ function autocomplete_js(){
 function search_for_aircrafts(){
   $('.search_btn').off().on('click',function(){
     $('#status_update').html("");
-    $('#search_modal').modal('hide');
+    //$('#search_modal').modal('hide');
 
     if ( validate_search() ){ // Check for validation
       $('.search-results').removeClass('show');
@@ -457,6 +530,14 @@ function search_for_aircrafts(){
 
       let i = 0;
       $('#'+active_tab+' .leg_row').each(function(index,item){
+
+        let departure_date = $(this).find('.leg_departure_date').val();
+            departure_date = moment(departure_date).format("YYYY/MM/DD HH:mm");
+
+        let return_date = $(this).find('.leg_return_date').val();
+        if ( typeof return_date !== 'undefined' && return_date!= ''){
+          return_date = moment(return_date).format("YYYY/MM/DD HH:mm");
+        }
         
         let leg = {
           from_iata : $(this).find('.leg_from').val(),
@@ -465,8 +546,8 @@ function search_for_aircrafts(){
           to_iata : $(this).find('.leg_to').val(),
           to_icao : $(this).find('.leg_to').attr('selected_icao'),
           to_gmt : $(this).find('.leg_to').attr('selected_gmt'),
-          departure_date : $(this).find('.leg_departure_date').val(),
-          return_date : $(this).find('.leg_return_date').val(),
+          departure_date : departure_date,
+          return_date : return_date,
           pax : $(this).find('.leg_no_of_passengers').val()
         };
 
@@ -481,7 +562,7 @@ function search_for_aircrafts(){
             to_icao : $(this).find('.leg_from').attr('selected_icao'),
             to_gmt : $(this).find('.leg_from').attr('selected_gmt'),
             departure_date : legs[previous_index].return_date,
-            return_date : $(this).find('.leg_return_date').val(),
+            return_date : return_date,
             pax : legs[previous_index].pax
           };
           legs[i]=intermediate_leg;
@@ -518,7 +599,8 @@ function search_for_aircrafts(){
     }else{
 
       $('.search-results').removeClass('show');
-      $('#status_update').html("<strong>Sorry :(</strong><br>  We can't find any result for the current selection. Please make sure that required data is entered.");
+      let default_note = $('#status_update').attr('default_note');
+      $('#status_update').html("<strong>Sorry :(</strong><br>"+default_note);
       $('.search_loader').addClass('show');
       // Animate page scroll to selection top
       let initselect_scroll_top = $("#initial_selection").offset().top;
@@ -618,7 +700,13 @@ function search_for_aircrafts(){
           //console.log(data);
           $('#search-results1').html('');
 
-          data = JSON.parse(data);
+          try {
+            data = JSON.parse(data);
+          }
+          catch(err) {
+            $('#status_update').html("Results not found for current selection");
+          }
+          
           console.log(data);
 
           if (typeof data.totals === 'undefined'){
@@ -727,6 +815,8 @@ function search_for_aircrafts(){
             //Refresh
             $('i').tooltip();
             set_currency_change();
+            language_select();
+            send_inquiry();
           }
         },
 
@@ -759,11 +849,15 @@ function search_for_aircrafts(){
             //If no date for intermediate legs
             if ( typeof leg.to_gmt == 'undefined' || !leg.to_gmt ){
               leg['to_gmt'] = previous_leg_to_gmt;
+              console.log('Requested previous leg to gmt:'+previous_leg_to_gmt);
             }else{
               previous_leg_to_gmt = leg.to_gmt;
             }
+
+
             if ( typeof leg.departure_date == 'undefined' || !leg.departure_date ){
               leg["departure_date"] = previous_leg_arrival_date;
+              console.log('Requested previous arrival date:'+previous_leg_arrival_date);
             }
 
 
@@ -774,15 +868,16 @@ function search_for_aircrafts(){
 
 
         //UTC Timing...
-        let departure_dateandtime = leg.departure_date;
-        departure_dateandtime = departure_dateandtime.split("-").join("/");
-        departure_dateandtime_moment = moment(departure_dateandtime).format("YYYY/MM/DD HH:mm:ss");
-        departure_dateandtime = new Date( departure_dateandtime_moment );
-        let t_departure_time = departure_dateandtime_moment +' '+ format_gmt_to_string(leg.from_gmt);
-        let departure_dateandtime_utc = new Date(t_departure_time).getTime();
+        let departure_dateandtime = new Date(leg.departure_date);
+        console.log('departure date passed:'+leg.departure_date);
+
+        let t_departure_time = leg.departure_date+' '+ format_gmt_to_string(leg.from_gmt);
+        console.log('Departure date and time string:'+ t_departure_time);
+        //let departure_dateandtime_utc = new Date(t_departure_time).getTime();
+        let departure_dateandtime_utc = moment(t_departure_time).format('x'); // Timestamp
         let departure_date = departure_dateandtime.toLocaleString().split(',')[0];
 
-        console.log('departure_time:'+departure_dateandtime);
+        console.log('departure datetime object:'+departure_dateandtime);
         console.log('departure_datetime_utc:'+departure_dateandtime_utc);
         
         //Calculations
@@ -799,13 +894,14 @@ function search_for_aircrafts(){
           let total_duration_minutes = total_duration % 60;
               total_duration_minutes = Math.ceil(total_duration_minutes);
 
-        let total_duration_utc = total_duration*60*1000; //Miliseconds
-        let destination_time_utc = departure_dateandtime_utc + total_duration_utc + format_gmt_to_utc(leg.to_gmt);
+        let total_duration_utc = Math.ceil(total_duration)*60*1000; //Miliseconds
+        console.log('total duration miliseconds:'+total_duration_utc);
+        let destination_time_utc = parseInt(departure_dateandtime_utc) + parseInt(total_duration_utc) + format_gmt_to_utc(leg.to_gmt);
         console.log('Destination time utc: '+destination_time_utc);
         let destination_dateandtime = parseTimestamp(destination_time_utc);
         console.log('Destination time: '+destination_dateandtime);
-          previous_leg_arrival_date = destination_dateandtime.toUTCString();
-        previous_leg_arrival_datetime = destination_dateandtime;
+          previous_leg_arrival_date = destination_dateandtime;
+          previous_leg_arrival_datetime = destination_dateandtime;
         console.log('arrival time:'+destination_dateandtime);
         let destination_time_hr = destination_dateandtime.getHours();
         let destination_date = destination_dateandtime.toLocaleString().split(',')[0];
@@ -887,6 +983,7 @@ function search_for_aircrafts(){
           let gmt_utc = (gmt_h*60 + gmt_m)*60*1000;
           console.log('destination gmt to utc:'+gmt_utc);
 
+          gmt_utc = parseInt(gmt_utc);
           return (gmt_utc);
         }
 
@@ -894,6 +991,95 @@ function search_for_aircrafts(){
         function parseTimestamp(timestampStr) {
           return new Date(new Date(timestampStr).getTime() + (new Date(timestampStr).getTimezoneOffset() * 60 * 1000));
         };
+
+  function send_inquiry(){
+    $('.send_inquiry').off().on('click', function(){
+      //Inquired Card
+      let card = $(this).closest('.aircraft_card');
+      let contact = {};
+      contact['contact_name'] = card.find('.contact_name').val();
+      contact['contact_email'] = card.find('.contact_email').val();
+      contact['contact_phone']  = card.find('.contact_phone').val();
+      contact['contact_requirements']  = card.find('.contact_requirements').val();
+       
+      let quoted_total = card.find('.total_price').attr('price_in_eur');
+          quoted_total = Math.ceil(quoted_total) + "EUR";
+      let selected_aircraft = card.find('.ac_category_name').html();
+
+      //Search Selection 
+      let active_tab = $('#initial_selection .tab-content .tab-pane.active').attr('id');
+  
+      let legs = [];
+
+      let i = 0;
+      $('#'+active_tab+' .leg_row').each(function(index,item){
+
+        let departure_date = $(this).find('.leg_departure_date').val();
+            departure_date = moment(departure_date).format("YYYY/MM/DD HH:mm");
+
+        let return_date = $(this).find('.leg_return_date').val();
+        if ( typeof return_date !== 'undefined' && return_date!= ''){
+          return_date = moment(return_date).format("YYYY/MM/DD HH:mm");
+        }
+        
+        let leg = {
+          from_iata : $(this).find('.leg_from').val(),
+          from_icao : $(this).find('.leg_from').attr('selected_icao'),
+          from_gmt : $(this).find('.leg_from').attr('selected_gmt'),
+          to_iata : $(this).find('.leg_to').val(),
+          to_icao : $(this).find('.leg_to').attr('selected_icao'),
+          to_gmt : $(this).find('.leg_to').attr('selected_gmt'),
+          departure_date : departure_date,
+          return_date : return_date,
+          pax : $(this).find('.leg_no_of_passengers').val()
+        };
+
+        //Additional leg row if injected before for multi leg select
+        if (active_tab=="pills-multi-leg" && i>0){
+          let previous_index = i - 1;
+          let intermediate_leg = {
+            from_iata : legs[previous_index].to_iata,
+            from_icao : legs[previous_index].to_icao,
+            from_gmt : legs[previous_index].to_gmt,
+            to_iata : $(this).find('.leg_from').val(),
+            to_icao : $(this).find('.leg_from').attr('selected_icao'),
+            to_gmt : $(this).find('.leg_from').attr('selected_gmt'),
+            departure_date : legs[previous_index].return_date,
+            return_date : return_date,
+            pax : legs[previous_index].pax
+          };
+          legs[i]=intermediate_leg;
+          legs[i+1]=leg;
+          i = i+2;
+        }else{
+          legs[i]=leg;
+          i = i+1;
+        }
+      });
+      
+  
+      let inquiry_selection = {
+        active_tab : active_tab,
+        legs :legs,
+        contact: contact,
+        aircraft: selected_aircraft,
+        total: quoted_total
+      };
+
+      console.log(inquiry_selection);
+
+      const emailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (inquiry_selection.contact.contact_email.match( emailformat )){
+        card.find('.contact_email').removeClass('redback');
+        card.find('.inquirymsg_fail').addClass('show_inquirymsg');
+      }else{
+        card.find('.contact_email').addClass('redback');
+        card.find('.inquirymsg_fail').addClass('show_inquirymsg');
+
+        
+      }
+    });
+  }
 
 
 //--- jQuery No Conflict

@@ -13,6 +13,8 @@
         //UI functions
         row_actions(); // On edit button click
         image_uploads();//Image Uploads
+
+        language_selects(); // Language Selects
     })
 
     /**
@@ -219,6 +221,65 @@ function do_file_upload(ac_img_type,ac_row){
     var upload = new Upload(file);
     upload.doUpload(file);
 }
+
+
+
+/**
+ * 
+ * Language Selects
+ */
+
+ function language_selects(){
+     $('.lang_tab_link').on('click', function(){
+        $('.lang_tab_link').removeClass('btn-primary');
+        $('.lang_tab_link').addClass('btn-secondary');
+        $(this).removeClass('btn-secondary');
+        $(this).addClass('btn-primary');
+
+        let lang_id = $(this).attr('lang_id');
+        $('.lang_tab').removeClass('lg_active');
+        $('#lang_tab'+lang_id).addClass('lg_active');
+     });
+
+     $('#update_language').on('click',function(){
+        $('.lg_active').addClass('redback');
+        let langs = {};
+        
+        let id = $('.lg_active').attr('id');
+            id = id.replace('lang_tab','');
+
+        langs['id']=id;
+
+        let language = $('.lg_active').attr('lang_name');
+        langs['language']=language;
+
+        $('.lg_active .lang_row_set').each(function(){
+            let lang_key = $(this).attr('row_key');
+            langs[lang_key] = $(this).val();
+        });
+
+        console.log(langs);
+
+        $.ajax({     
+            url: ajax_url + 'save_lang_row.php',
+            method: "POST",
+            data: langs,
+            success: function(data)
+            { 
+                //data = JSON.parse(data);
+                console.log(data);
+                $('.lang_tab').removeClass('redback');
+            },
+    
+            error: function(e)
+            {
+                console.log('Error');
+                console.log(e);
+                alert ('Could not update language file. Error:'+e);
+            }
+        });
+     });
+ }
     
     
     //--- jQuery No Conflict

@@ -1077,3 +1077,41 @@ ul {
 .cta-inquiry{
 	transition: all .4s;
 }
+.flatpickr-time{
+	background-color: #eee;
+
+}
+
+.flatpickr-time .numInput,
+.flatpickr-time .numInput:focus{
+	border:none;
+}
+
+.send_inquiry{
+	transition: all .4s;
+	width: 250px;
+	background-color: #aaa;
+}
+.send_inquiry:hover{
+	background-color: #666;
+}
+
+.inquiry_msg{
+	text-align: center;
+    padding: 2px;
+	display: none;
+}
+.inquirymsg_success{
+    background-color: #aec;
+}
+.inquirymsg_fail{
+    background-color: #ecc;
+}
+.inquirymsg_success.show_inquirymsg,
+.inquirymsg_fail.show_inquirymsg{
+	display: block;
+}
+
+.contact_email.redback{
+	background-color: #ecc;
+}
