@@ -29,27 +29,31 @@ global $wpdb;
         var plugin_url = "<?= $plugin_url ?>";
     </script>
 <div class="container-fluid" >
-    <h2 style="padding:20px;" id="admin-title">FlightBook Plugin Settings <br>
-    <span>-FlightBook Pluggin by ChandimaJ</span></h2>
+    <div style="margin-top:15px; margin-bottom:20px; background-color:#555; padding:5px;">
+        
+            <img src="<?= $plugin_url ?>/assets/images/velox-jets-logo.png" class="velox-logo">
+       
+            <h2 style="padding:20px; display:inline-block" id="admin-title">Velox Jets Pricing Tool</h2>
+    </div>
     
     <h4>Aircraft Categories</h4>
     <hr>
         <input id="ac_file_upload" type="file" style="display:none;"/>
         <table id="ac_table" class="table-responsive table-sm table-striped">
             <thead class="thead-dark">
-                <tr class="bg-info">
-                    <th style="width:12%">Name</th>
-                    <th style="">Description</th>
+                <tr class="">
+                    <th style="width:12%">Category</th>
+                    <th style="">Aircraft Description</th>
                     <th style="width:6%">Min. Pax</th>
                     <th style="width:6%">Max. Pax</th>
                     <th style="width:8%">Range (NM)</th>
                     <th style="width:8%">Speed (KTS)</th>
-                    <th style="width:8%">Price/Hr (USD)</th>
-                    <th style="width:6%">Adds.(%)</th>
-                    <th style="width:6%">PerLand (USD)</th>
-                    <th style="width:6%">PerLand (min)</th>
-                    <th style="width:50px">In. Img</th>
-                    <th style="width:50px">Out. Img</th>
+                    <th style="width:8%">Hourly Rate (USD)</th>
+                    <th style="width:6%">Comm(%)</th>
+                    <th style="width:6%">Fees (USD)</th>
+                    <th style="width:6%">Block Time (min)</th>
+                    <th style="width:50px">Int Image</th>
+                    <th style="width:50px">Ext Image</th>
                     <th style="width:60px">Edit Row</th>
                 </tr>
             </thead>
@@ -98,10 +102,44 @@ global $wpdb;
     Plugin Settings
 -->
 
-<div class="container-fluid" style="margin-top:50px">
+<div class="container-fluid stripe" style="margin-top:50px">
     <h4>Plugin Settings</h4>
     <hr>
-    <div class="row" id="settings_row">
+    <div id="settings_row">
+        <div class="row" id="settings_buttons_row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3">
+                <button class="btn btn-warning" id="reset_settings">Reset</button>
+                <button class="btn btn-success" id="update_settings">Update</button>
+            </div>
+        </div>
+    <?php
+$table_name = $wpdb->prefix."flightbook_settings";
+$sql = "SELECT DISTINCT * FROM $table_name";
+$result = $wpdb->get_results( $sql );
+    
+$msg = "fail";
+
+if($result){
+    $tabs = '';
+    foreach ($result[0] as $key=>$row){
+
+        if ($key != 'id'){
+?>
+        <div class="row settings_set_row">
+            <div class="col-sm-4"><?= $key ?></div>
+            <div class="col-sm-8">
+                <input type="text" class="settings_row_set form-control" id="settings_<?= $key ?>"  value="<?= $row ?>" />
+            </div>
+        </div>
+
+<?php
+        }
+    }
+}else{
+    echo ('Error getting settings from database.');
+}
+?>
     </div> 
 </div>
 
@@ -111,7 +149,7 @@ global $wpdb;
 -->
 
 <div class="container-fluid" style="margin-top:50px">
-    <h4>Languages</h4>
+    <h4>Language Translations</h4>
     <hr>
     <div class="row" id="language_select_row">
 
@@ -135,10 +173,10 @@ if($result){
     }
 ?>
 
-        <div class="col-md-3">
-            <div><strong>Select language to modify:</strong></div>
+        <div class="col-md-12">
+            <div>Select language file to modify <br><br></div>
         </div>
-        <div class="col-md-6" id="language_tabs">
+        <div class="col-md-9" id="language_tabs">
             <?= $tabs ?>
         </div>
         <div class="col-md-3">

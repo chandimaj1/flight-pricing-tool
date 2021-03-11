@@ -46,8 +46,6 @@ if (! defined( 'ABSPATH') ){
     }
 
 
-
-
 //Normal Leg row template
 $leg_row_normal = '
 <div class="row no-gutters leg_row">
@@ -77,15 +75,16 @@ $leg_row_normal = '
 <div class="col-md-7">
     <div class="flight-book-right">
         <div class="row no-gutters">
-            <div class="col-md-4">
+            <div class="col-sm-4 col-6">
                 <div class="form-group">
                     <div class="field">
                         <input type="text" class="form-control selector leg_departure_date" placeholder="When?" />
                         <span class="icon-span"><img src="'.$plugin_url.'assets/images/calendar-icon.svg" alt="" /></span>
+                        <div class="leg_departure_dateformat">Departure Date</div>
                     </div> 
                 </div> 
             </div>
-            <div class="col-md-5">
+            <div class="col-sm-5 col-6">
                 <div class="form-group">
                     <div class="field">
                         <select class="templatingSelect2 leg_no_of_passengers"> 
@@ -118,7 +117,7 @@ $leg_row_normal = '
                     </div> 
                 </div> 
             </div>
-            <div class="col-md-3">
+            <div class="col-sm-3 col-12">
                 <div class="form-group border-none">
                     <a class="btn brn-search search_btn">Search</a>
                 </div>
@@ -157,7 +156,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
 <div class="col-md-8">
     <div class="flight-book-right">
         <div class="row no-gutters">
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-3 col-sm-6 col-6">
                 <div class="form-group">
                     <div class="field">
                         <input type="text" class="form-control selector2 leg_departure_date" placeholder="Departure date" />
@@ -165,7 +164,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
                     </div> 
                 </div> 
             </div>
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-3 col-sm-6 col-6">
                 <div class="form-group">
                     <div class="field">
                         <input type="text" class="form-control selector2 leg_return_date" placeholder="Return date" />
@@ -173,11 +172,11 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
                     </div> 
                 </div> 
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6 col-6">
                 <div class="form-group">
                     <div class="field">
                         <select class="templatingSelect2 leg_no_of_passengers"> 
-                            <option selected value="0" class="default_passenger">Passengers</option>
+                            <option selected value="0" disabled style="display:none" class="default_passenger">Passengers</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -206,7 +205,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
                     </div> 
                 </div> 
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6 col-6">
                 <div class="form-group border-none">
                     <a class="btn brn-search search_btn">Search</a>
                 </div>
@@ -243,7 +242,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
 <div class="col-md-7">
     <div class="flight-book-right">
         <div class="row no-gutters">
-            <div class="col-md-4">
+            <div class="col-sm-4 col-6">
                 <div class="form-group">
                     <div class="field">
                         <input type="text" class="form-control selector leg_departure_date" placeholder="When?" />
@@ -251,11 +250,11 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                     </div> 
                 </div> 
             </div>
-            <div class="col-md-5">
+            <div class="col-sm-5 col-6">
                 <div class="form-group">
                     <div class="field">
-                        <select class="templatingSelect2 leg_no_of_passangers multi_select2"> 
-                            <option selected value="0" class="default_passenger">Passengers</option>
+                        <select class="templatingSelect2 leg_no_of_passengers multi_select2"> 
+                            <option selected value="0" disabled class="default_passenger">Passengers</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -284,7 +283,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                     </div> 
                 </div> 
             </div>
-            <div class="col-md-3">
+            <div class="col-sm-3 col-12">
                 <div class="form-group border-none">
                     <ul class="add-close-btn">
                         <li><a class="btn brn-search addrow_btn" ><img src="'.$plugin_url.'assets/images/pluse-icon.svg" alt="" /> </a></li>
@@ -305,11 +304,11 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
             <div class="title-images">
                 <div class="row no-gutters">
                     <div class="col-6">
-                        <div class="img-holder" style="background-image:url('."'$plugin_url"."assets/images/aircrafts/{{aircraft_image}}'".')">
+                        <div class="img-holder img-enlargeable" style="background-image:url('."'$plugin_url"."assets/images/aircrafts/{{aircraft_image}}'".')">
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="img-holder" style="background-image:url('."'$plugin_url"."assets/images/aircrafts/{{aircraft_inner_image}}'".')">
+                        <div class="img-holder img-enlargeable" style="background-image:url('."'$plugin_url"."assets/images/aircrafts/{{aircraft_inner_image}}'".')">
                         </div>
                     </div>
                 </div>
@@ -379,8 +378,8 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
             </div>
             <div class="text-right">
                 <div class="btn brn_search send_inquiry">Send Inquiry</div>
-                <div class="inquirymsg_success inquiry_msg">Message sent !</div>
-                <div class="inquirymsg_fail inquiry_msg">Message not sent. Please make sure you have entered a valid email address.</div>
+                <div class="inquirymsg_success inquiry_msg">Thank you. We will get in touch with you soon.</div>
+                <div class="inquirymsg_fail inquiry_msg">Message not sent.</div>
             </div>
         </form>
     </div>
@@ -445,10 +444,14 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
                 <div class="country-flight col-lg-4 col-md-5 col-sm-12">
                     <ul id="language_select" class="col-sm-7 col-xs-7" selected_language="en">
                         <li><a class='en' ac_lang="english" > <i data-toggle="tooltip" data-placement="top" title="English"> <img src="<?= $plugin_url ?>assets/images/uk.png" alt="" /> </i> </a></li>
+                        <!--
                         <li><a class='afganistan' ac_lang="afganistan" > <i data-toggle="tooltip" data-placement="top" title="Afganistan"> <img src="<?= $plugin_url ?>assets/images/afghanistan-flag.png" alt="" /> </i> </a></li>
                         <li><a class='albania' ac_lang="albania" ><i data-toggle="tooltip" data-placement="top" title="Albania"> <img src="<?= $plugin_url ?>assets/images/albania.png" alt="" /> </i> </a></li>
                         <li><a class='uae' ac_lang="uae" ><i data-toggle="tooltip" data-placement="top" title="UAE"> <img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /> </i> </a></li>
                         <li><a class='andorra'ac_lang="andorra" ><i data-toggle="tooltip" data-placement="top" title="Andorra"> <img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /> </i> </a></li>
+                        -->
+                        <li><a class='portugese'ac_lang="portugese" ><i data-toggle="tooltip" data-placement="top" title="Portugese"> <img src="<?= $plugin_url ?>assets/images/portugese.png" alt="" /> </i> </a></li>
+                        <li><a class='spannish'ac_lang="spannish" ><i data-toggle="tooltip" data-placement="top" title="Spannish"> <img src="<?= $plugin_url ?>assets/images/spannish.png" alt="" /> </i> </a></li>
                     </ul>
                     <div class="currency-dropdown col-sm-5 col-xs-5">
                         <select class="templatingSelect2" id="currency_selector"> 
@@ -490,6 +493,7 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
                             <?= $leg_row_normal ?>
                             <!-- Leg Row Multi-->
                             <?= $leg_row_multi_row ?>
+                            
                         </form>
                     </div>
                 </div>

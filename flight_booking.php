@@ -155,7 +155,7 @@ class flightBook
             greatcircle_api_host VARCHAR(200),
             fixer_api_key VARCHAR(200),
             fixer_api_host VARCHAR(200),
-            PRIMARY KEY  (id))';
+            PRIMARY KEY (id))';
             $sql_insert = "INSERT INTO $table_name
             VALUES (1,'charter@veloxaircharter.com','0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb','greatcirclemapper.p.rapidapi.com','1495fc83ad76e1ecfdd2e8773e9af9a2','http://data.fixer.io/api/latest')";
             require_once(ABSPATH.'wp-admin/includes/upgrade.php');
@@ -188,6 +188,7 @@ class flightBook
             results_card_midsize VARCHAR(40),
             results_card_supermid VARCHAR(40),
             results_card_heavyprivate VARCHAR(40),
+            results_card_ultralong VARCHAR(40),
             results_card_vipairliners VARCHAR(40),
 
             results_card_inquiry VARCHAR(40),

@@ -16,7 +16,7 @@
 #results_modal {
     position: relative;
     width: 100%;
-    min-height: 230px;
+    min-height: 280px;
 }
 
 
@@ -135,6 +135,7 @@
 
 .modal_close {
     position: fixed;
+    left: 95%;
     right: 10px;
     font-size: 22pt;
     font-weight: 100;
@@ -144,9 +145,14 @@
     z-index: 9999999;
     cursor: pointer;
 }
+
 .modal_close:hover{
     opacity: 1;
     color: #fff;
+}
+
+.modal_close .fa{
+    color: #666;
 }
 
 .redfont {
@@ -195,4 +201,65 @@
 
 .tooltip {
     position: fixed;
+    z-index: 9999;
+}
+
+
+@supports (-webkit-touch-callout: none) {
+    body{
+        width: 100vw !important;
+    }
+ }
+
+ @media (max-width:576px){
+	#results_modal{
+        min-height:100vh;
+        max-width: 100vw;
+    }
+
+    .img-holder{
+        height: 150px;
+    }
+
+    .modal-dialog{
+        margin: 0 0 0 0;
+    }
+}
+
+#search_modal .modal-dialog{
+    margin: 0 auto;
+}
+
+.default_passenger{
+    display: none;
+}
+
+.img-enlargeable{
+    cursor: zoom-in;
+}
+
+.search_loader img{
+    margin-top:30px;
+}
+
+
+.leg_departure_dateformat {
+    position: absolute;
+    display: block;
+    align-content: baseline;
+    top: 21px;
+    left: 31px;
+    width: 90%;
+    overflow: hidden;
+    height: 20px;
+    font-size: 14px;
+    color: #898989;
+    font-family: 'Avenir';
+    font-weight: 500;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.leg_departure_date {
+    opacity: 0 !important;
 }

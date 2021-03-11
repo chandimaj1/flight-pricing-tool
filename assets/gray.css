@@ -302,6 +302,8 @@ ul {
 .search-modal .modal-dialog {
 	max-width: 978px;
 	width: 100%;
+	margin: 0 0 0 0;
+	margin: 0 auto;
 }
 
 .search-modal .modal-dialog .modal-content {
@@ -343,12 +345,12 @@ ul {
 .search-modal .flight-book-top .nav-pills .nav-item .nav-link {
 	padding: 8px 10px;
 	color: #444;
-	font-family: 'Avenir';
-	font-weight: 400;
+	font-weight: 600;
 	font-size: 16px;
 	border-bottom: 2px solid transparent;
 	border-radius: 0;
 	margin-bottom: -2px;
+	transition: all .3s;
 }
 
 .search-modal .flight-book-top .nav-pills .nav-item .nav-link.active {
@@ -399,7 +401,6 @@ ul {
 	border-radius: 0;
 	font-size: 14px;
 	color: #898989;
-	font-family: 'Avenir';
 	font-weight: 500;
 	padding-left: 40px;
 	height: 60px;
@@ -913,7 +914,7 @@ ul {
 
 @media (max-width: 575px) {
 	.search-modal .modal-dialog .modal-content {
-		padding: 100px 15px;
+		padding: 5px;
 	}
 
 	.modal-dialog-centered {
@@ -986,6 +987,9 @@ ul {
 	border-top-width: 0;
 	border-bottom-color: #ccc;
 	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	max-height: 364px;
+    overflow-y: scroll;
+    overflow-x: visible;
 }
 
 .autocomplete-result {
@@ -1114,4 +1118,44 @@ ul {
 
 .contact_email.redback{
 	background-color: #ecc;
+}
+
+.leg_row_multi{
+	border-bottom: solid 1px #ccc;
+}
+
+@media (max-width:767px){
+	.complete-trip{
+		border-bottom: solid 1px #eee;
+	}
+}
+
+@media (max-width:576px){
+	.img-holder{
+		height:210px;
+	}
+}
+
+
+/* Final set of changes */
+
+.cta-inquiry.btn:focus,
+.cta-inquiry.btn,
+.send_inquiry.btn,
+.cta-inquiry.btn:focus
+{
+	box-shadow: none !important;
+}
+
+
+ .flight-book-inner span.select2-selection.select2-selection--single {
+    padding-top: 2px;
+    padding-left: 3px;
+}
+
+.autocomplete-result-hovered{
+	color: white;
+	background: #26C9FF;
+	border-bottom-color: #26C9FF;
+	outline: solid 1px #00b6f2;
 }

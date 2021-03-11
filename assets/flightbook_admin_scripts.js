@@ -15,6 +15,7 @@
         image_uploads();//Image Uploads
 
         language_selects(); // Language Selects
+        plugin_settings(); // Plugin settings
     })
 
     /**
@@ -267,7 +268,7 @@ function do_file_upload(ac_img_type,ac_row){
             success: function(data)
             { 
                 //data = JSON.parse(data);
-                console.log(data);
+                console.log("Language database update :"+data);
                 $('.lang_tab').removeClass('redback');
             },
     
@@ -279,6 +280,66 @@ function do_file_upload(ac_img_type,ac_row){
             }
         });
      });
+ }
+
+
+
+
+
+/**
+ * 
+ * 
+ * Plugin settings
+ */
+ function plugin_settings(){
+    $('#update_settings').on('click', function(){
+        $('#settings_row').addClass('redback');
+        console.log('updating settings...');
+        
+        let settings = {
+            inquiry_email:$('#settings_inquiry_email').val(),
+            greatcircle_api_key:$('#settings_greatcircle_api_key').val(),
+            greatcircle_api_host:$('#settings_greatcircle_api_host').val(),
+            fixer_api_key:$('#settings_fixer_api_key').val(),
+            fixer_api_host:$('#settings_fixer_api_host').val()
+        }
+        console.log(settings);
+
+        $.ajax({     
+            url: ajax_url + 'save_settings_row.php',
+            method: "POST",
+            data: settings,
+            success: function(data)
+            { 
+                //data = JSON.parse(data);
+                console.log("Settings database update :"+data);
+                $('#settings_row').removeClass('redback');
+            },
+    
+            error: function(e)
+            {
+                console.log('Error');
+                console.log(e);
+                alert ('Could not connect to settings update. Error:'+e);
+            }
+        });
+    });
+
+
+
+    $('#reset_settings').on('click', function(){
+        $('#settings_row').addClass('redback');
+        console.log('Resetting settings...');
+        
+        $('#settings_inquiry_email').val('charter@veloxaircharter.com');
+        $('#settings_greatcircle_api_key').val('0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb');
+        $('#settings_greatcircle_api_host').val('greatcirclemapper.p.rapidapi.com');
+        $('#settings_fixer_api_key').val('1495fc83ad76e1ecfdd2e8773e9af9a2');
+        $('#settings_fixer_api_host').val('http://data.fixer.io/api/latest');
+
+
+        $('#update_settings').trigger('click');
+    });
  }
     
     

@@ -59,10 +59,18 @@ function onload_settings(){
   };
 
   $(".templatingSelect2").select2({
-      placeholder: "What currency do you use?", //placeholder
-      templateResult: setCurrency,
-      templateSelection: setCurrency
+      //placeholder: "What currency do you use?", //placeholder
+      //templateResult: setCurrency,
+      //templateSelection: setCurrency
+      templateResult: resultState
   });
+
+  function resultState(data, container) {
+    if(data.element) {
+        $(container).addClass( $(data.element).attr("class") );
+    }
+    return data.text;
+  }
 
 
     //Currency values from google finance api
@@ -144,6 +152,12 @@ function onload_settings(){
  */
 function ui_functions(){
 
+  //Format date on departure data
+  $('.leg_departure_date').on('change', function(){
+    let formatted_date = moment( $(this).val() ).format('MM/DD/YYYY HH:mm');
+    $(this).parent().find('.leg_departure_dateformat').html( formatted_date );
+  });
+
   // From and To swapping
   $('.icon-change.swap').off().on('click', function(){
     //Animate icon
@@ -181,11 +195,19 @@ function ui_functions(){
     time_24hr: true,
   });
 
-  $('.multi_select2').select2();
+  $('.multi_select2').select2({
+    templateResult: resultState
+  });
+  function resultState(data, container) {
+    if(data.element) {
+        $(container).addClass( $(data.element).attr("class") );
+    }
+    return data.text;
+  }
 
   //Add new row on multi leg
   $('#pills-multi-leg .addrow_btn').off().on('click',function(){
-    $(this).closest('form').append(window.multi_row_html);
+    $(this).closest('form').find('.leg_row_multi').last().after(window.multi_row_html);
     ui_functions();
     autocomplete_js();
 
@@ -193,13 +215,13 @@ function ui_functions(){
 
   //Remove row on multi leg
   $('#pills-multi-leg .removerow_btn').off().on('click',function(){
-    let noof_multirows = $(this).closest('form').find('.leg_row').length;
+    let noof_multirows = $(this).closest('form').find('.leg_row_multi').length;
     //console.log(noof_multirows);
-    if ( noof_multirows > 2 ){
-      $(this).closest('.leg_row').remove();
+    if ( noof_multirows > 1 ){
+      $(this).closest('.leg_row_multi').remove();
     }else{
-      $(this).closest('.leg_row').find('input').val('');
-      $(this).closest('.leg_row').find('select').val(0);
+      $(this).closest('.leg_row_multi').find('input').val('');
+      $(this).closest('.leg_row_multi').find('select').val(0);
     }
   });
 
@@ -253,7 +275,8 @@ function ui_functions(){
   $('.ac_category_name').eq(2).html(lg.results_card_midsize);
   $('.ac_category_name').eq(3).html(lg.results_card_supermid);
   $('.ac_category_name').eq(4).html(lg.results_card_heavyprivate);
-  $('.ac_category_name').eq(5).html(lg.results_card_vipairliners);
+  $('.ac_category_name').eq(5).html(lg.results_card_ultralong);
+  $('.ac_category_name').eq(6).html(lg.results_card_vipairliners);
 
   //--Inquiry
   $('.ac_lang_inquiry').html(lg.results_card_inquiry);
@@ -308,6 +331,7 @@ function autocomplete_js(){
   
   // Run separate searches for each autocompletex
   $('.autocompletex').each(function(){
+
     let ac = $(this)
       .on('click', function(e) {
         e.stopPropagation();
@@ -329,14 +353,28 @@ function autocomplete_js(){
       })
       .appendTo(wrap);
     
-    $(document)
-      .on('mouseover', '.autocomplete-result', function(e) {
-        var index = parseInt($(this).data('index'), 10);
+
+    $(document).on('DOMSubtreeModified', ac, function(){
+     
+      $(this).find('.autocomplete-result').off().on('mouseover', function(e) {
+        //console.log(this);
+        $(this).closest('.autocomplete-results').find('.autocomplete-result').removeClass('autocomplete-result-hovered');
+        $(this).addClass('autocomplete-result-hovered');
+  
+        var index = parseInt( $(this).data('index'), 10);
+        
         if (!isNaN(index)) {
           list.attr('data-highlight', index);
         }
-      })
-      .on('click', clearResults());
+      });
+
+      $(document).on('click', 'body', function(){
+        clearResults();
+      });
+
+    });
+
+    
       
     function clearResults() {
       results = [];
@@ -345,7 +383,7 @@ function autocomplete_js(){
     }
       
     // On option select
-    function selectIndex(index) {
+    function selectIndex(index, dontClearResults) {
       if ( (results.length >= index + 1) && use_ajax ) { //For ajax
         ac.val(results[index].codeIataAirport);
         //console.log(results[index].codeIataAirport);
@@ -354,8 +392,13 @@ function autocomplete_js(){
         ac.val(results[index].item.codeIataAirport);
         ac.attr('selected_icao', results[index].item.codeIcaoAirport);
         ac.attr('selected_gmt', results[index].item["GMT"]);
-        clearResults();
+        
       }
+
+      if (typeof dontClearResults === 'undefined' || dontClearResults==false){
+          clearResults();
+      }
+
     }
       
     results = [];
@@ -363,9 +406,11 @@ function autocomplete_js(){
     var selectedIndex = -1;
       
     function search(e) {
-      if (e.which === 38 || e.which === 13 || e.which === 40) {
-        return;
+      
+      if (e.which === 38 || e.which === 13 || e.which === 40 || e.which === 9 || e.which==27) {
+       return;
       }
+      
       
       if (ac.val().length > 0) { //----- Min character length to start search
         console.log( 'search_init_at:'+Date.now() );
@@ -379,33 +424,70 @@ function autocomplete_js(){
     }
       
     function onKeyDown(e) {
+
+      $('.autocomplete-result').removeClass('autocomplete-result-hovered');
+
+      selectedIndex = parseInt( list.attr('data-highlight') );
+
+      if (e.which==27){
+        clearResults();
+        return;
+      }
+
+      if (selectedIndex<0){
+        selectedIndex = 0;
+      }
+      numResults = list.find('.autocomplete-result').length;
+      if (numResults<0){
+        numResults = 0;
+        list.attr('data-highlight', selectedIndex);
+      }
+
+      console.log( list.attr('data-highlight') );
       switch(e.which) {
         case 38: // up
+        console.log("up");
           selectedIndex--;
           if (selectedIndex <= -1) {
-            selectedIndex = -1;
+            selectedIndex = 0;
           }
           list.attr('data-highlight', selectedIndex);
+          selectIndex(selectedIndex, true);
           break;
         case 13: // enter
+        console.log("enter");
           selectIndex(selectedIndex);
           break;
-        case 9: // enter
+        case 9: // enter or tab
+        console.log("enter or tab");
+          //selectIndex(selectedIndex);
+          selectedIndex=0;
+          list.attr('data-highlight', selectedIndex);
           selectIndex(selectedIndex);
-          e.stopPropagation();
+          //e.stopPropagation();
+          //e.preventDefault();
           return;
         case 40: // down
+        console.log("down");
           selectedIndex++;
+          console.log(numResults);
           if (selectedIndex >= numResults) {
             selectedIndex = numResults-1;
           }
+          
+          if(selectedIndex<0){
+            selectedIndex=0;
+          }
           list.attr('data-highlight', selectedIndex);
+          selectIndex(selectedIndex, true);
           break;
     
         default: return; // exit this handler for other keys
       }
+      console.log(selectedIndex);
+      list.find('.autocomplete-result').eq(selectIndex).addClass('autocomplete-result-hovered');
       e.stopPropagation();
-      e.preventDefault(); // prevent the default action (scroll / move caret)
+      //e.preventDefault(); // prevent the default action (scroll / move caret)
     }
 
   }); 
@@ -519,6 +601,53 @@ function search_for_aircrafts(){
     $('#status_update').html("");
     //$('#search_modal').modal('hide');
 
+
+
+
+
+    //Modal Placement and styling
+
+      let initselect_scroll_top = $("#initial_selection").offset().top -20;
+      let initselect_height = $('#initial_selection').height()+25; // Init select height + 50px margin + 5px Margin
+      let searchresults_height = $(window).height() - initselect_height - 10; //Remaining height to show results + 15px margin bottom
+
+      // If mobile
+      let is_mobile = false;
+      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+          is_mobile = true;
+          console.log('is mobile: Yes!');
+       }else{
+          console.log('is mobile: No!');
+       }
+
+
+
+      if( searchresults_height < 400 || is_mobile || $(window).width() < 576 ){ // If search results height too small or if mobile
+
+        console.log('is mobile:'+is_mobile+" Extended height Mode");
+        
+        searchresults_height = $(window).height() - 25;
+        initselect_height = 20;
+        $('#search_modal').css('z-index',99999);
+        $('.search_loader').css('margin-top', '20%');
+
+        initselect_scroll_top = $("#initial_selection").offset().top-20; //Keep only 15px margin
+
+      }else{
+        console.log('is mobile:'+is_mobile+" General Height Mode");
+        $('#search_modal').css('z-index',1);
+        $('.search_loader').css('margin-top', 'inherit');
+      }
+
+
+      $('#search_modal').css('margin-top',initselect_height+'px');
+      $('#search_modal').css('height',searchresults_height+'px');
+
+
+
+
+
+
     if ( validate_search() ){ // Check for validation
       $('.search-results').removeClass('show');
       $('.search_loader').removeClass('show');
@@ -582,11 +711,9 @@ function search_for_aircrafts(){
   
       console.log(search_selection);
   
-      // Animate page scroll to selection top
-      let initselect_scroll_top = $("#initial_selection").offset().top;
-      initselect_scroll_top = initselect_scroll_top - 50;
-  
-      // Animate search loader
+
+
+      //Scro Page top
       $('html, body').stop().animate({
         scrollTop: initselect_scroll_top
       }, 300, function(){
@@ -603,21 +730,10 @@ function search_for_aircrafts(){
       $('#status_update').html("<strong>Sorry :(</strong><br>"+default_note);
       $('.search_loader').addClass('show');
       // Animate page scroll to selection top
-      let initselect_scroll_top = $("#initial_selection").offset().top;
-      initselect_scroll_top = initselect_scroll_top - 50;
-      let initselect_height = $('#initial_selection').height()+55;
-      let searchresults_height = $(window).height() - initselect_height - 15;
-        if( searchresults_height < 300){
-          searchresults_height = $(window).height() - 30;
-          initselect_height = 20;
-          $('#search_modal').css('z-index',99999);
-        }else{
-          $('#search_modal').css('z-index',1);
-        }
-      
-      $('#search_modal').css('margin-top',initselect_height+'px');
-      $('#search_modal').css('height',searchresults_height+'px');
 
+
+
+      //Scro Page top
       $('html, body').stop().animate({
         scrollTop: initselect_scroll_top
       }, 300, function(){
@@ -642,6 +758,16 @@ function search_for_aircrafts(){
         $(this).removeClass('redfont');
      }
    });
+
+   $('#'+active_tab+' select').each(function(index, item){
+    if ( $(this).val()==0 || $(this).val() == '' || typeof $(this).val() === 'undefined' ){
+       $(this).closest('.field').find('.select2-selection').addClass('redfont');
+       validation = false;
+    }else{
+      $(this).closest('.field').find('.select2-selection').removeClass('redfont');
+    }
+  });
+
    console.log('validation: '+validation);
    return validation;
  }
@@ -651,19 +777,6 @@ function search_for_aircrafts(){
   // Get Search Results
   function get_search_results( search_selection ){
     console.log('fetching search results...');
-
-      let initselect_height = $('#initial_selection').height()+55;
-      let searchresults_height = $(window).height() - initselect_height - 15;
-        if( searchresults_height < 300){
-          searchresults_height = $(window).height() - 30;
-          initselect_height = 20;
-          $('#search_modal').css('z-index',99999);
-        }else{
-          $('#search_modal').css('z-index',1);
-        }
-      
-      $('#search_modal').css('margin-top',initselect_height+'px');
-      $('#search_modal').css('height',searchresults_height+'px');
 
       let delay_results;
 
@@ -817,6 +930,7 @@ function search_for_aircrafts(){
             set_currency_change();
             language_select();
             send_inquiry();
+            viewfullimage_onclick();
           }
         },
 
@@ -830,7 +944,10 @@ function search_for_aircrafts(){
 
 
 
-
+      /**
+       * 
+       * Get Leg HTML
+       */
       var previous_leg_arrival_date;
       var previous_leg_to_gmt;
       function get_leg_html(legs, item, data, leg_index){
@@ -929,14 +1046,14 @@ function search_for_aircrafts(){
         if (origin_time_min<10){origin_time_min=''+0+origin_time_min};
       
         legs_timing_html = legs_timing_html.replace('{{departure_time}}',origin_time_hr+":"+origin_time_min);
-        legs_timing_html = legs_timing_html.replace('{{departure_date}}',departure_date);
+        legs_timing_html = legs_timing_html.replace('{{departure_date}}',moment(departure_dateandtime).format('MM/DD/YYYY'));
         legs_timing_html = legs_timing_html.replace('{{origin_iata}}',origin_airpot);
       
         if (destination_time_min<10){destination_time_min=''+0+destination_time_min};
         if (destination_time_hr<10){destination_time_hr=''+0+destination_time_hr};
 
         legs_timing_html = legs_timing_html.replace('{{arrival_time}}',destination_time_hr+":"+destination_time_min);
-        legs_timing_html = legs_timing_html.replace('{{arrival_date}}',destination_date);
+        legs_timing_html = legs_timing_html.replace('{{arrival_date}}',moment(destination_dateandtime).format('MM/DD/YYYY'));
         legs_timing_html = legs_timing_html.replace('{{destination_iata}}',destination_airpot);
       
         //Total Flight Time
@@ -964,7 +1081,7 @@ function search_for_aircrafts(){
           let gmt_m = x[1];
 
           let gmt_sign = '+';
-          if (gmt_h<0){gmt_sign='-'}
+          if (gmt_h<0){gmt_sign='-'; gmt_h = Math.abs(gmt_h);}
           if (gmt_h<10){gmt_h='0'+gmt_h}
           if (gmt_m && gmt_m.length<2){
             gmt_m='0'+gmt_m;
@@ -992,6 +1109,30 @@ function search_for_aircrafts(){
           return new Date(new Date(timestampStr).getTime() + (new Date(timestampStr).getTimezoneOffset() * 60 * 1000));
         };
 
+  function viewfullimage_onclick(){
+    $('.img-enlargeable').off().on('click', function(){
+      let src = $(this).css('background-image');
+      src = src.match(/\((.*?)\)/)[1].replace(/('|")/g,'');
+      var modal;
+      function removeModal(){ modal.remove(); $('body').off('keyup.modal-close'); }
+      modal = $('<div>').css({
+          background: 'RGBA(0,0,0,.5) url('+src+') no-repeat center',
+          backgroundSize: 'contain',
+          width:'100%', height:'100%',
+          position:'fixed',
+          zIndex:'1000000',
+          top:'0', left:'0',
+          cursor: 'zoom-out'
+      }).click(function(){
+          removeModal();
+      }).appendTo('body');
+      //handling ESC
+      $('body').on('keyup.modal-close', function(e){
+        if(e.key==='Escape'){ removeModal(); } 
+      });
+    });
+  }
+
   function send_inquiry(){
     $('.send_inquiry').off().on('click', function(){
       //Inquired Card
@@ -1015,11 +1156,11 @@ function search_for_aircrafts(){
       $('#'+active_tab+' .leg_row').each(function(index,item){
 
         let departure_date = $(this).find('.leg_departure_date').val();
-            departure_date = moment(departure_date).format("YYYY/MM/DD HH:mm");
+            departure_date = moment(departure_date).format("MM/DD/YYYY HH:mm");
 
         let return_date = $(this).find('.leg_return_date').val();
         if ( typeof return_date !== 'undefined' && return_date!= ''){
-          return_date = moment(return_date).format("YYYY/MM/DD HH:mm");
+          return_date = moment(return_date).format("MM/DD/YYYY HH:mm");
         }
         
         let leg = {
@@ -1071,7 +1212,24 @@ function search_for_aircrafts(){
       const emailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
       if (inquiry_selection.contact.contact_email.match( emailformat )){
         card.find('.contact_email').removeClass('redback');
-        card.find('.inquirymsg_fail').addClass('show_inquirymsg');
+        card.find('.inquirymsg_fail').removeClass('show_inquirymsg');
+
+        $.ajax({     
+          url: ajax_url + "send_email.php",
+          method: "POST",
+          data: inquiry_selection,
+          success: function(data)
+          {   
+            console.log(data);
+            card.find('.inquirymsg_success').addClass('show_inquirymsg');
+          },
+          fail:function(e){
+              console.log('Error connecting to send email...');
+              card.find('.inquirymsg_fail').addClass('show_inquirymsg');
+          }
+        });
+
+
       }else{
         card.find('.contact_email').addClass('redback');
         card.find('.inquirymsg_fail').addClass('show_inquirymsg');
