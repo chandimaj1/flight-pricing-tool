@@ -464,8 +464,8 @@ $legs_time_template = '
         let googlefont_link_tag = "<link href='https://fonts.googleapis.com/css?family=" + theme.google_font + ":100,200,300,400,500,600,700,800' rel='stylesheet' type='text/css'>";
         let style_tag = `
         <style>
-            #initial_selection *,
-            #search_modal *,
+            #initial_selection *:not(i),
+            #search_modal *:not(i),
             .search-modal .flatpickr-calendar *,
             .search-modal .select2-results__option{
                 font-family:'${theme.google_font}' !important;
@@ -619,11 +619,11 @@ $legs_time_template = '
 
 <!-- Modal Window -->
 <div class="modal fade  search-modal" id="search_modal">
-    <div class="modal_close"><i class="fa fa-times"></i></div>
     <div class="modal modal-dialog modal-dialog" role="document">
         <div class="modal-content">
             
             <div class=" search-modal" id="results_modal">
+                <div class="modal_close"><i class="fa fa-times"></i></div>
 
                 <!-- Loader -->
                 <div class="search_loader fade show">

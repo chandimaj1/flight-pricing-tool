@@ -634,7 +634,8 @@ function search_for_aircrafts(){
         searchresults_height = $(window).height() - 25;
         initselect_height = 20;
         $('#search_modal').css('z-index',99999);
-        $('.search_loader').css('margin-top', '20%');
+        $('.search_loader').css('margin-top', '50px');
+        searchresults_height += 50;
 
         initselect_scroll_top = $("#initial_selection").offset().top-20; //Keep only 15px margin
 
