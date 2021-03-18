@@ -161,6 +161,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
                     <div class="field">
                         <input type="text" class="form-control selector2 leg_departure_date" placeholder="Departure date" />
                         <span class="icon-span"><img src="'.$plugin_url.'assets/images/calendar-icon.svg" alt="" /></span>
+                        <div class="leg_departure_dateformat">Departure Date</div>
                     </div> 
                 </div> 
             </div>
@@ -169,6 +170,7 @@ $leg_row_round_trip = '<div class="row no-gutters leg_row" >
                     <div class="field">
                         <input type="text" class="form-control selector2 leg_return_date" placeholder="Return date" />
                         <span class="icon-span"><img src="'.$plugin_url.'assets/images/calendar-icon.svg" alt="" /></span>
+                        <div class="leg_departure_dateformat">Return Date</div>
                     </div> 
                 </div> 
             </div>
@@ -247,6 +249,7 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
                     <div class="field">
                         <input type="text" class="form-control selector leg_departure_date" placeholder="When?" />
                         <span class="icon-span"><img src="'.$plugin_url.'assets/images/calendar-icon.svg" alt="" /></span>
+                        <div class="leg_departure_dateformat">Departure Date</div>
                     </div> 
                 </div> 
             </div>
@@ -335,7 +338,27 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
                     </div>
                 </div>
 
-                {{legs_time_placeholder}}
+
+                <div id="carousel__carousel_id__" class="carousel slide" data-ride="carousel" data-interval="false" data-wrap="false">
+                    <div class="carousel-inner">
+                        {{legs_time_placeholder}}
+                    </div>
+
+                    <a class="carousel-control-prev" href="#carousel__carousel_id__" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel__carousel_id__" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                    </a>
+                </div>
+
+
+
+
+                
+
             </div>
         </div>
     </div>
@@ -387,7 +410,9 @@ $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
 </div>
 </div>';
 
-$legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" leg_total_price="{{leg_total}}">
+$legs_time_template = '
+<div class="carousel-item">
+<div class="detail-card-footer row no-gutters leg_card" leg_total_price="{{leg_total}}">
 <div class="col">
     <div class="time">{{departure_time}}</div>
     <div class="ac_date">{{departure_date}}</div>
@@ -401,6 +426,7 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
     <div class="time">{{arrival_time}}</div>
     <div class="ac_date">{{arrival_date}}</div>
     <div class="loc">{{destination_iata}}</div>
+</div>
 </div>
 </div>';
 
@@ -421,6 +447,7 @@ $legs_time_template = '<div class="detail-card-footer row no-gutters leg_card" l
 </div>
 
 <!-- Init Selection -->
+
 <div class="search-modal" id="initial_selection">
     <div class=" modal-dialog modal-dialog" role="document">
         <div class="modal-content">

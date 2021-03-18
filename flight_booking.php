@@ -164,6 +164,25 @@ class flightBook
             add_option("flightbook_settings_db", "1.1");
         }
 
+        // Theme
+        $table_name = $wpdb->prefix."flightbook_theme";
+        if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {
+            $sql = 'CREATE TABLE '.$table_name.'(
+            id INTEGER NOT NULL,
+            inquiry_email VARCHAR(200),
+            greatcircle_api_key VARCHAR(200),
+            greatcircle_api_host VARCHAR(200),
+            fixer_api_key VARCHAR(200),
+            fixer_api_host VARCHAR(200),
+            PRIMARY KEY (id))';
+           // $sql_insert = "INSERT INTO $table_name
+            //VALUES (1,'charter@veloxaircharter.com','0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb','greatcirclemapper.p.rapidapi.com','1495fc83ad76e1ecfdd2e8773e9af9a2','http://data.fixer.io/api/latest')";
+            require_once(ABSPATH.'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+            //dbDelta($sql_insert);
+            add_option("flightbook_settings_db", "1.1");
+        }
+
         // Languages
         $table_name = $wpdb->prefix."flightbook_languages";
         if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {

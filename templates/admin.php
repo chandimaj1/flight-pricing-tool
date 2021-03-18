@@ -144,6 +144,53 @@ if($result){
 </div>
 
 
+
+<!--
+    Theme Settings
+-->
+
+<div class="container-fluid stripe" style="margin-top:50px">
+    <h4>Theme Settings</h4>
+    <hr>
+    <div id="settings_row">
+        <div class="row" id="settings_buttons_row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3">
+                <button class="btn btn-warning" id="reset_settings">Reset</button>
+                <button class="btn btn-success" id="update_settings">Update</button>
+            </div>
+        </div>
+    <?php
+$table_name = $wpdb->prefix."flightbook_settings";
+$sql = "SELECT DISTINCT * FROM $table_name";
+$result = $wpdb->get_results( $sql );
+    
+$msg = "fail";
+
+if($result){
+    $tabs = '';
+    foreach ($result[0] as $key=>$row){
+
+        if ($key != 'id'){
+?>
+        <div class="row settings_set_row">
+            <div class="col-sm-4"><?= $key ?></div>
+            <div class="col-sm-8">
+                <input type="text" class="settings_row_set form-control" id="settings_<?= $key ?>"  value="<?= $row ?>" />
+            </div>
+        </div>
+
+<?php
+        }
+    }
+}else{
+    echo ('Error getting settings from database.');
+}
+?>
+    </div> 
+</div>
+
+
 <!--
     Language Settings
 -->

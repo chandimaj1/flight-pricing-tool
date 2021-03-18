@@ -157,6 +157,11 @@ function ui_functions(){
     let formatted_date = moment( $(this).val() ).format('MM/DD/YYYY HH:mm');
     $(this).parent().find('.leg_departure_dateformat').html( formatted_date );
   });
+  // Return date
+  $('.leg_return_date').on('change', function(){
+    let formatted_date = moment( $(this).val() ).format('MM/DD/YYYY HH:mm');
+    $(this).parent().find('.leg_departure_dateformat').html( formatted_date );
+  });
 
   // From and To swapping
   $('.icon-change.swap').off().on('click', function(){
@@ -893,9 +898,16 @@ function search_for_aircrafts(){
 
 
               //Final HTML append to placeholder
+              let timestamp =  Date.now();
               flight_card_html = flight_card_html.replace('{{legs_time_placeholder}}', legs_html);
+              flight_card_html = flight_card_html.replace(/__carousel_id__/g, timestamp);
               $('#search-results1').append(flight_card_html);
-
+              $('#search-results1 .carousel-inner').each(function(){
+                $(this).children('.carousel-item').eq(0).addClass('active');
+                if ($(this).children('.carousel-item').length == 1){
+                  $('.carousel-control-prev, .carousel-control-next').remove();
+                }
+              });
 
               //PRICING
               let price = 0; // In USD
