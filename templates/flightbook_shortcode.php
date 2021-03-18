@@ -27,8 +27,21 @@ if (! defined( 'ABSPATH') ){
         $aircrafts = json_encode("{message:'error'}");
     }
 
+    //Get theme settings from the database
+    $table_name = $wpdb->prefix."flightbook_theme";
+    $sql = "SELECT DISTINCT * FROM $table_name";
+    $result = $wpdb->get_results( $sql );
+    
+    if($result){ 
+        $msg= "success";
+        $theme = json_encode($result[0]);
+    }else{
+        $msg="failed";
+        $theme = json_encode("{message:'error'}");
+    }
 
 
+    //GET Language settings from the database
     $table_name = $wpdb->prefix."flightbook_languages";
     $sql = "SELECT DISTINCT * FROM $table_name";
     $result = $wpdb->get_results( $sql );
@@ -443,6 +456,67 @@ $legs_time_template = '
         var legs_time_template = `<?= $legs_time_template ?>`;
         var aircrafts = <?= $aircrafts ?>;
         var ac_lang = <?= $languages ?>;
+        var theme = <?= $theme ?>;
+        console.log(theme);
+        /**
+         * Setting theme values on elements
+         */
+        let googlefont_link_tag = "<link href='https://fonts.googleapis.com/css?family=" + theme.google_font + ":100,200,300,400,500,600,700,800' rel='stylesheet' type='text/css'>";
+        let style_tag = `
+        <style>
+            #initial_selection *,
+            #search_modal *,
+            .search-modal .flatpickr-calendar *,
+            .search-modal .select2-results__option{
+                font-family:'${theme.google_font}' !important;
+            }
+
+            .search-modal .flight-book-top .nav-pills .nav-item .nav-link{
+                font-size: ${theme.tabs_font_size}px !important;
+                color: ${theme.tabs_font_color} !important;
+            }
+
+            .search-modal .flight-book-inner .form-group .field .form-control,
+            .search-modal .flight-book-inner .form-group .field .form-control::placeholder,
+            .search-modal .flight-book-inner .form-group .field .select2-selection__rendered,
+            .search-modal .leg_departure_dateformat,
+            .search-modal .leg_return_dateformat{
+                font-size: ${theme.input_fields_font_size}px !important;
+                color: ${theme.input_fields_font_color} !important;
+            }
+
+            .search-modal .flight-book-inner .form-group .field span.icon-span{
+                background-color: ${theme.input_fields_icon_backgroundcolor} !important;
+            }
+
+            .search-modal .btn{
+                font-size: ${theme.buttons_font_size}px !important;
+                color: ${theme.buttons_font_color} !important;
+                background-color: ${theme.buttons_backgroundcolor} !important;
+            }
+
+            .search-modal .search_btn:hover,
+            .search-modal .btn:hover
+            {
+                background-color: ${theme.buttons_hovercolor} !important;
+            }
+
+            .card-result .top-result .detail-card .media .media-body h3{
+                font-size: ${theme.aircraft_category_font_size}px !important;
+                color: ${theme.aircraft_category_font_color} !important;
+            }
+
+            .card-result .top-result .detail-card .media .media-body .badge-passanger,
+            .flatpickr-day.selected,
+            .flatpickr-time,
+            .select2-container--default .select2-results__option--highlighted[aria-selected]
+            {
+                background-color: ${theme.accents_background_color} !important;
+            }
+        </style>
+        `;
+        document.head.insertAdjacentHTML( 'beforeend', googlefont_link_tag );
+        document.head.insertAdjacentHTML( 'beforeend', style_tag );
     </script>
 </div>
 

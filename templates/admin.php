@@ -152,16 +152,16 @@ if($result){
 <div class="container-fluid stripe" style="margin-top:50px">
     <h4>Theme Settings</h4>
     <hr>
-    <div id="settings_row">
+    <div id="themes_row">
         <div class="row" id="settings_buttons_row">
             <div class="col-md-9"></div>
             <div class="col-md-3">
-                <button class="btn btn-warning" id="reset_settings">Reset</button>
-                <button class="btn btn-success" id="update_settings">Update</button>
+                <button class="btn btn-warning" id="reset_theme_settings">Reset</button>
+                <button class="btn btn-success" id="update_theme_settings">Update</button>
             </div>
         </div>
     <?php
-$table_name = $wpdb->prefix."flightbook_settings";
+$table_name = $wpdb->prefix."flightbook_theme";
 $sql = "SELECT DISTINCT * FROM $table_name";
 $result = $wpdb->get_results( $sql );
     
@@ -171,12 +171,27 @@ if($result){
     $tabs = '';
     foreach ($result[0] as $key=>$row){
 
-        if ($key != 'id'){
+        if ($key != 'id' && $key != 'google_font'){
 ?>
-        <div class="row settings_set_row">
+        <div class="row themes_set_row">
             <div class="col-sm-4"><?= $key ?></div>
             <div class="col-sm-8">
-                <input type="text" class="settings_row_set form-control" id="settings_<?= $key ?>"  value="<?= $row ?>" />
+                <input type="text" class="themes_row_set form-control" id="themes_<?= $key ?>"  value="<?= $row ?>" />
+            </div>
+        </div>
+
+<?php
+        }else if($key == 'google_font'){
+?>
+        <div class="row themes_set_row">
+            <div class="col-sm-4"><?= $key ?></div>
+            <div class="col-sm-4">
+                <select class="themes_row_set form-control" id="settings_google_font"  selected_font="<?= $row ?>">
+
+                <select>
+            </div>
+            <div class="col-sm-4">
+                <div id="sample_text">The quick brown fox jumps over the lazy dog.</div>
             </div>
         </div>
 

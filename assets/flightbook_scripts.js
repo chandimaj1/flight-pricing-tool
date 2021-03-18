@@ -756,20 +756,21 @@ function search_for_aircrafts(){
    let validation = true;
   
    $('#'+active_tab+' input').each(function(index, item){
+     let closest_field = $(this).closest('.field');
      if ( $(this).val() == '' || typeof $(this).val() === 'undefined' ){
-        $(this).addClass('redfont');
+        closest_field.addClass('redfont');
         validation = false;
      }else{
-        $(this).removeClass('redfont');
+        closest_field.removeClass('redfont');
      }
    });
 
    $('#'+active_tab+' select').each(function(index, item){
-    if ( $(this).val()==0 || $(this).val() == '' || typeof $(this).val() === 'undefined' ){
-       $(this).closest('.field').find('.select2-selection').addClass('redfont');
+    if ( $(this).val()<=1 || $(this).val() == '' || typeof $(this).val() === 'undefined' ){
+       $(this).closest('.field').addClass('redfont');
        validation = false;
     }else{
-      $(this).closest('.field').find('.select2-selection').removeClass('redfont');
+      $(this).closest('.field').removeClass('redfont');
     }
   });
 

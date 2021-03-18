@@ -168,18 +168,27 @@ class flightBook
         $table_name = $wpdb->prefix."flightbook_theme";
         if ($wpdb->get_var('SHOW TABLES LIKE '.$table_name) != $table_name) {
             $sql = 'CREATE TABLE '.$table_name.'(
-            id INTEGER NOT NULL,
-            inquiry_email VARCHAR(200),
-            greatcircle_api_key VARCHAR(200),
-            greatcircle_api_host VARCHAR(200),
-            fixer_api_key VARCHAR(200),
-            fixer_api_host VARCHAR(200),
-            PRIMARY KEY (id))';
-           // $sql_insert = "INSERT INTO $table_name
-            //VALUES (1,'charter@veloxaircharter.com','0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb','greatcirclemapper.p.rapidapi.com','1495fc83ad76e1ecfdd2e8773e9af9a2','http://data.fixer.io/api/latest')";
+                id int(11) NOT NULL,
+                googlefonts_api_key varchar(200) DEFAULT NULL,
+                google_font varchar(200) DEFAULT NULL,
+                tabs_font_size int(2) DEFAULT NULL,
+                tabs_font_color varchar(20) DEFAULT NULL,
+                input_fields_font_size int(2) DEFAULT NULL,
+                input_fields_font_color varchar(20) DEFAULT NULL,
+                input_fields_icon_backgroundcolor varchar(20) DEFAULT NULL,
+                buttons_font_size int(2) DEFAULT NULL,
+                buttons_font_color varchar(20) DEFAULT NULL,
+                buttons_backgroundcolor varchar(20) DEFAULT NULL,
+                buttons_hovercolor varchar(20) DEFAULT NULL,
+                aircraft_category_font_size int(2) DEFAULT NULL,
+                aircraft_category_font_color varchar(20) DEFAULT NULL,
+                accents_background_color varchar(20) DEFAULT NULL,
+                PRIMARY KEY (id))';
+            $sql_insert = "INSERT INTO $table_name
+            VALUES (1, 'AIzaSyBjeHBEKp__9rXvXEfCPkN6afUywdtvHAw', 'Nunito', 16, '#444', 14, '#898989', 'transparent', 16, '#fff', '#cbcbcb', '#666', 20, '#383838', '#898989')";
             require_once(ABSPATH.'wp-admin/includes/upgrade.php');
             dbDelta($sql);
-            //dbDelta($sql_insert);
+            dbDelta($sql_insert);
             add_option("flightbook_settings_db", "1.1");
         }
 

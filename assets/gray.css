@@ -227,7 +227,6 @@ ul {
 	border-radius: 0;
 	background-color: #cbcbcb;
 	border: 2px solid #fff;
-	box-shadow: 0 2px 16px 0 rgba(128, 128, 128, 0.5);
 	color: #fff;
 	font-size: 16px;
 	height: 60px;
@@ -253,7 +252,7 @@ ul {
 .select2-container--default .select2-selection--single {
 	border: none;
 	border-radius: 4px;
-	width: 100px;
+	width: 110px;
 	height: 42px;
 	padding-right: 20px;
 	text-align: center;
@@ -421,7 +420,12 @@ ul {
 	position: absolute;
 	top: 50%;
 	transform: translate(0, -50%);
-	left: 9px;
+	left: 7px;
+	width: 25px;
+    height: 25px;
+    text-align: center;
+    /* padding: 1px; */
+    border-radius: 15px;
 }
 
 .search-modal .flight-book-inner .form-group .field span.icon-span img {

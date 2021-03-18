@@ -16,6 +16,10 @@
 
         language_selects(); // Language Selects
         plugin_settings(); // Plugin settings
+
+        theme_settings(); // Theme settings
+
+        google_fonts(); //Google fonts
     })
 
     /**
@@ -341,7 +345,130 @@ function do_file_upload(ac_img_type,ac_row){
         $('#update_settings').trigger('click');
     });
  }
+
+
+ /**
+ * 
+ * 
+ * Theme settings
+ */
+  function theme_settings(){
+    $('#update_theme_settings').on('click', function(){
+        $('#themes_row').addClass('redback');
+        console.log('updating Theme settings...');
+        
+        let settings = {
+            googlefonts_api_key:$('#themes_googlefonts_api_key').val(),
+            google_font:$('#settings_google_font').val(),
+            tabs_font_size:$('#themes_tabs_font_size').val(),
+            tabs_font_color:$('#themes_tabs_font_color').val(),
+            input_fields_font_size:$('#themes_input_fields_font_size').val(),
+            input_fields_font_color:$('#themes_input_fields_font_color').val(),
+            input_fields_icon_backgroundcolor:$('#themes_input_fields_icon_backgroundcolor').val(),
+            buttons_font_size:$('#themes_buttons_font_size').val(),
+            buttons_font_color:$('#themes_buttons_font_color').val(),
+            buttons_backgroundcolor:$('#themes_buttons_backgroundcolor').val(),
+            buttons_hovercolor:$('#themes_buttons_hovercolor').val(),
+            aircraft_category_font_size:$('#themes_aircraft_category_font_size').val(),
+            aircraft_category_font_color:$('#themes_aircraft_category_font_color').val(),
+            accents_background_color:$('#themes_accents_background_color').val(),
+        }
+        console.log(settings);
+
+        $.ajax({     
+            url: ajax_url + 'save_theme_row.php',
+            method: "POST",
+            data: settings,
+            success: function(data)
+            { 
+                //data = JSON.parse(data);
+                console.log("Themes database update :"+data);
+                $('#themes_row').removeClass('redback');
+            },
     
+            error: function(e)
+            {
+                console.log('Error');
+                console.log(e);
+                alert ('Could not connect to theme update.');
+            }
+        });
+    });
+
+
+
+    $('#reset_theme_settings').on('click', function(){
+        $('#themes_row').addClass('redback');
+        console.log('Resetting Theme settings...');
+        
+        $('#themes_googlefonts_api_key').val('AIzaSyBjeHBEKp__9rXvXEfCPkN6afUywdtvHAw');
+        $('#settings_google_font').val('Nunito');
+        $('#themes_tabs_font_size').val('16');
+        $('#themes_tabs_font_color').val('#444');
+        $('#themes_input_fields_font_size').val('14');
+        $('#themes_input_fields_font_color').val('#898989');
+        $('#themes_input_fields_icon_backgroundcolor').val('transparent');
+        $('#themes_buttons_font_size').val('16');
+        $('#themes_buttons_font_color').val('#fff');
+        $('#themes_buttons_backgroundcolor').val('#cbcbcb');
+        $('#themes_buttons_hovercolor').val('#666');
+        $('#themes_aircraft_category_font_size').val('20');
+        $('#themes_aircraft_category_font_color').val('#383838');
+        $('#themes_accents_background_color').val('#898989');
+
+
+        $('#update_theme_settings').trigger('click');
+    });
+ }
+
+
+
+ /**
+  * 
+  *  Google fonts
+  */
+
+ function google_fonts(){
+     //APi key
+     const google_api_key = 'AIzaSyBjeHBEKp__9rXvXEfCPkN6afUywdtvHAw';
+     const google_api_url = 'https://www.googleapis.com/webfonts/v1/webfonts?key='+google_api_key;
+    
+     $.getJSON(google_api_url, function(fonts){
+         console.log(fonts);
+        for (var i = 0; i < fonts.items.length; i++) {      
+        $('#settings_google_font')
+            .append($("<option></option>")
+            .attr("value", fonts.items[i].family)
+            .text(fonts.items[i].family));
+        }    
+
+        let selected_font = $('#settings_google_font').attr('selected_font');
+        $('#settings_google_font').val( selected_font );
+        addGoogleFont(selected_font);
+
+        change_google_font();
+
+        $('#settings_google_font').on('change',change_google_font);
+    });
+ }
+
+    function addGoogleFont(FontName) {
+        $('link[href^="https://fonts.googleapis.com/css?family="]').each(function(){ 
+            $(this).remove();
+        });
+        $("head").append("<link href='https://fonts.googleapis.com/css?family=" + FontName + "' rel='stylesheet' type='text/css'>");
+    }
+    
+    function change_google_font(){
+        let selected_font = $('#settings_google_font').val();
+        console.log('font selected: '+selected_font);
+        addGoogleFont(selected_font);
+
+        $('#sample_text').css({
+            'font-family':selected_font,
+            'color':'red',
+        });
+    }
     
     //--- jQuery No Conflict
     })(jQuery);
