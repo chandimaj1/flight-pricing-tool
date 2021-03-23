@@ -54,7 +54,8 @@
 
 .select2-dropdown{
     z-index:9999;
-    top:0;
+    position: relative;
+    top:30px;
 }
 .search_btn{
     z-index: 98;
@@ -72,11 +73,12 @@
     padding: 0 0 0 0;
     overflow: hidden;
     opacity: 0;
+    transition: all .2s;
 }
 .search_loader.show{
     position: relative;
     padding:25px;
-    height: 0;
+    height: auto;
     opacity: 1;
 }
 .search_loader p{
@@ -258,7 +260,7 @@
     display: block;
     align-content: baseline;
     top: 18px;
-    left: 10px;
+    left: 40px;
     width: 90%;
     overflow: hidden;
     height: 20px;
@@ -296,4 +298,30 @@
     .carousel-control-prev{
         left: -15px;
     }
+}
+
+.search-modal button:active,
+.search-modal .btn:active,
+.btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle{
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.order_category{
+    width: 100%;
+    text-align: left;
+}
+
+.order_category select{
+    font-weight: 400;
+}
+
+#select2-orderby_time-results li:nth-child(1),
+#select2-orderby_price-results li:nth-child(1),
+#select2-orderby_pax-results li:nth-child(1){
+    display: none;
+}
+
+.select2-container--open{
+    z-index: 99999;
 }

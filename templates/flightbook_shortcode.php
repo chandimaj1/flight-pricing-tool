@@ -312,6 +312,42 @@ $leg_row_multi_row = '<div class="row no-gutters leg_row leg_row_multi">
 </div>
 </div>';
 
+$category_sorting_html =
+'<div id="category_sort">
+    <div class="row">
+        <div class="col-sm-2 text-center mb-3">
+            Order results by:
+        </div>
+         <div class="col-sm-3">
+            <div class="input-group">
+                <select class="order_category" id="orderby_time" title="Flight Time">
+                    <option selected class="hidden" value="noselect">Flight Time</option>
+                    <option value="asc">Lowest to highest</option>
+                    <option value="desc">Highest to lowest</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group">
+                <select class="order_category" id="orderby_price" Placeholder="Price">
+                    <option selected style="display:none" value="noselect">Price</option>
+                    <option value="asc">Lowest to highest</option>
+                    <option value="desc">Highest to lowest</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group">
+                <select class="order_category" id="orderby_pax">
+                    <option selected style="display:none" value="noselect">Passenger Capacity</option>
+                    <option value="asc">Lowest to highest</option>
+                    <option value="desc">Highest to lowest</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+    </div>
+</div>';
 
 $flight_info_card = '<div class="card-result aircraft_card" id="ac_{{ac_id}}">
 <div class="top-result">
@@ -454,6 +490,7 @@ $legs_time_template = '
         var multi_row_html = `<?= $leg_row_multi_row ?>`;
         var flight_info_card = `<?= $flight_info_card ?>`;
         var legs_time_template = `<?= $legs_time_template ?>`;
+        var category_sorting_html = `<?= $category_sorting_html ?>`;
         var aircrafts = <?= $aircrafts ?>;
         var ac_lang = <?= $languages ?>;
         var theme = <?= $theme ?>;

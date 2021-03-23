@@ -275,13 +275,13 @@ function ui_functions(){
 
   //Resutls Card
   //--Airplanes
-  $('.ac_category_name').eq(0).html(lg.results_card_turboprop);
-  $('.ac_category_name').eq(1).html(lg.results_card_lightjets);
-  $('.ac_category_name').eq(2).html(lg.results_card_midsize);
-  $('.ac_category_name').eq(3).html(lg.results_card_supermid);
-  $('.ac_category_name').eq(4).html(lg.results_card_heavyprivate);
-  $('.ac_category_name').eq(5).html(lg.results_card_ultralong);
-  $('.ac_category_name').eq(6).html(lg.results_card_vipairliners);
+  $('#ac_0 .ac_category_name').html(lg.results_card_turboprop);
+  $('#ac_1 .ac_category_name').html(lg.results_card_lightjets);
+  $('#ac_2 .ac_category_name').html(lg.results_card_midsize);
+  $('#ac_3 .ac_category_name').html(lg.results_card_supermid);
+  $('#ac_4 .ac_category_name').html(lg.results_card_heavyprivate);
+  $('#ac_5 .ac_category_name').html(lg.results_card_ultralong);
+  $('#ac_6 .ac_category_name').html(lg.results_card_vipairliners);
 
   //--Inquiry
   $('.ac_lang_inquiry').html(lg.results_card_inquiry);
@@ -834,6 +834,11 @@ function search_for_aircrafts(){
           }else{
             $('.search_loader').removeClass('show');
 
+            //Sorting section
+            $('#search-results1').append(window.category_sorting_html);
+            check_sorting();
+            $('.order_category').select2();
+
             //Populate results for each aircraft
             $(aircrafts).each(function(index, item){
               let flight_card_html = window.flight_info_card;
@@ -904,12 +909,7 @@ function search_for_aircrafts(){
               flight_card_html = flight_card_html.replace('{{legs_time_placeholder}}', legs_html);
               flight_card_html = flight_card_html.replace(/__carousel_id__/g, timestamp);
               $('#search-results1').append(flight_card_html);
-              $('#search-results1 .carousel-inner').each(function(){
-                $(this).children('.carousel-item').eq(0).addClass('active');
-                if ($(this).children('.carousel-item').length == 1){
-                  $('.carousel-control-prev, .carousel-control-next').remove();
-                }
-              });
+
 
               //PRICING
               let price = 0; // In USD
@@ -938,13 +938,45 @@ function search_for_aircrafts(){
                /* */
             });
 
+            //Carousel stuff
+            
+            $('#search-results1 .carousel-inner').each(function(){  
+
+              if (  $(this).children('.carousel-item').length == 1 ){
+                $(this).parent().find('.carousel-control-prev').remove();
+                $(this).parent().find('.carousel-control-next').remove();
+              }else{
+                $(this).parent().find('.carousel-control-prev').hide();
+              }
+
+              $(this).children('.carousel-item').eq(0).addClass('active');
+
+
+              $(this).parent().on('slide.bs.carousel', function (e) {
+                var slidingItemsAsIndex = $(this).find('.carousel-item').length - 1;
+                // If last item hide next arrow
+                if($(e.relatedTarget).index() == slidingItemsAsIndex ){
+                    $(this).find('.carousel-control-next').hide();
+                }
+                else{
+                  $(this).find('.carousel-control-next').show();
+                }
+                // If first item hide prev arrow
+                if($(e.relatedTarget).index() == 0){
+                  $(this).find('.carousel-control-prev').hide();
+                }
+                else{
+                  $(this).find('.carousel-control-prev').show();
+                }
+              });
+
+            });
+
+            
+
             $('.search-results').addClass('show');
-            //Refresh
-            $('i').tooltip();
-            set_currency_change();
-            language_select();
-            send_inquiry();
-            viewfullimage_onclick();
+            
+            refresh_search_results_ui();
           }
         },
 
@@ -956,14 +988,126 @@ function search_for_aircrafts(){
       });
     }
 
+    //Refresh results UI
+    function refresh_search_results_ui(){
+      $('i').tooltip();
+      set_currency_change();
+      language_select();
+      send_inquiry();
+      viewfullimage_onclick();
+    }
+
+
+    /**
+     * 
+     * 
+     *  Check sorting
+     */
+    function check_sorting(){
+      $('#search-results1 .order_category').off().on('change', function(){
+        let selected_sort = $(this).attr('id');
+        let selected_sort_value = $(this).val();
+        console.log('selected_sort:'+selected_sort+" by "+selected_sort_value);
+
+
+        let issort = false;
+        let sort_arr = [];
+
+        //Reset sort
+        $('.order_category').each(function(){
+          $(this).val("noselect");
+          $('#select2-'+$(this).attr('id')+'-container').attr("title", $(this).children('option').eq(0).text() );
+          $('#select2-'+$(this).attr('id')+'-container').text( $(this).children('option').eq(0).text() );
+        });
+
+        // If Order by Price
+        if ( selected_sort=="orderby_price" ){
+          console.log('order by price called.');
+
+          $('#search-results1 .aircraft_card').each(function(index){
+            let price = parseInt( $(this).find('.total_price').attr('price_in_eur') );
+            sort_arr.push([index, price]);
+          });
+          issort = true;
+
+        // If order by time
+        }else if ( selected_sort=="orderby_time" ){
+          console.log('order by time called.');
+
+          $('#search-results1 .aircraft_card').each(function(index){
+            let total_time = 0;
+            
+            $(this).find('.time-est').each(function(){
+              let leg_time = $(this).text();
+              leg_time = leg_time.replace(':','');
+              leg_time = parseInt(leg_time);
+              total_time += leg_time;
+            });
+            sort_arr.push([index, total_time]);
+          });
+
+          issort = true;
+        
+      // If order by pax
+        }else if ( selected_sort=="orderby_pax" ){
+          console.log('order by pax called.');
+
+          $('#search-results1 .aircraft_card').each(function(index){
+          let pax = $(this).find('.badge-passanger').text();
+          pax = pax.split("-");
+          let avg_pax = ( parseInt( pax[0] ) + parseInt( pax[1] ) )/2;
+          sort_arr.push([index, avg_pax]);
+        });
+
+        issort = true;
+      }
+
+
+        //Sort successful
+        if (issort){
+          console.log('order array element and values');
+          console.log(sort_arr);
+          //Sorting by asc
+          sort_arr.sort(function(a, b) {
+            return a[1] - b[1];
+          });
+          //sorting by desc
+          if (selected_sort_value=="desc"){
+            sort_arr.reverse();
+          }
+
+          console.log('sorted_array');
+          console.log(sort_arr);
+        
+          //Dom Change
+          let temp_div = $('<div></div>');
+          $.each(sort_arr, function(index, arr){
+              //console.log(arr[0]);
+              let this_element = $('#search-results1 .aircraft_card').eq(arr[0]);
+              let this_parent = $('<div class="card-result aircraft_card" id="'+this_element.attr('id')+'"></div>');
+              this_parent.append( this_element.html() );
+              temp_div.append(this_parent);
+          });
+
+          $('#search-results1 .aircraft_card').remove();
+          $('#search-results1').append( temp_div );
+          refresh_search_results_ui();
+
+          $("#"+selected_sort).val(selected_sort_value);
+        }
+
+      });
+    }
 
 
       /**
        * 
        * Get Leg HTML
        */
+
       var previous_leg_arrival_date;
       var previous_leg_to_gmt;
+
       function get_leg_html(legs, item, data, leg_index){
         let leg = legs[leg_index];
 
@@ -1157,8 +1301,10 @@ function search_for_aircrafts(){
       contact['contact_phone']  = card.find('.contact_phone').val();
       contact['contact_requirements']  = card.find('.contact_requirements').val();
        
-      let quoted_total = card.find('.total_price').attr('price_in_eur');
-          quoted_total = Math.ceil(quoted_total) + "EUR";
+      let quoted_total = card.find('.total_price').text();
+          quoted_total = quoted_total.replace(/,/g,'');
+          quoted_total = parseInt(quoted_total);
+          quoted_total = Math.ceil(quoted_total) + $('#select2-currency_selector-container').text();
       let selected_aircraft = card.find('.ac_category_name').html();
 
       //Search Selection 
@@ -1169,12 +1315,11 @@ function search_for_aircrafts(){
       let i = 0;
       $('#'+active_tab+' .leg_row').each(function(index,item){
 
-        let departure_date = $(this).find('.leg_departure_date').val();
-            departure_date = moment(departure_date).format("MM/DD/YYYY HH:mm");
+        let departure_date = $(this).find('.leg_departure_dateformat').eq(0).text();
 
-        let return_date = $(this).find('.leg_return_date').val();
-        if ( typeof return_date !== 'undefined' && return_date!= ''){
-          return_date = moment(return_date).format("MM/DD/YYYY HH:mm");
+        let return_date = $(this).find('.leg_departure_dateformat').eq(1).text();
+        if ( typeof return_date == 'undefined' || return_date== ''){
+          return_date = 'No Return Date';
         }
         
         let leg = {
@@ -1218,7 +1363,7 @@ function search_for_aircrafts(){
         legs :legs,
         contact: contact,
         aircraft: selected_aircraft,
-        total: quoted_total
+        total: quoted_total,
       };
 
       console.log(inquiry_selection);

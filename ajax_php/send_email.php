@@ -18,26 +18,44 @@ if ($result){
 }
 
 //var_dump($_POST);
+//$send_email = 'chandima@axawebs.com';
 
-
-    $legs = '';
-    foreach ($_POST["legs"] as $leg){
-        $hasreturn = false;
-        if (!isset($leg["return_date"]) && $leg["return_date"]==''){
-            $hasreturn = true;
+function get_active_tab($tab){
+    switch ($tab){
+        case "pills-one-way":{
+            return "One Way";
+            break;
         }
 
-        if ($hasreturn){
+        case "pills-round-trip":{
+            return "Round Trip";
+            break;
+        }
+
+        case "pills-multi-leg":{
+            return "Multi Leg";
+            break;
+        }
+
+        case "pills-empty-leg":{
+            return "Empty Leg";
+            break;
+        }
+    }
+}
+
+    $prev_to_iata = '';
+    $legs = '';
+    foreach ($_POST["legs"] as $leg){
+        
+        $returnhtml = '';
+        if ($_POST["active_tab"]=="pills-round-trip" && isset($leg["return_date"]) && $leg["return_date"]!=''){
             $returnhtml = '<td>'.$leg["return_date"].'</td>';
-        }else{
-            $returnhtml = '';
         }
 
         $html = '
             <tr>
-                <td>'.$leg["from_iata"].'</td>
                 <td>'.$leg["from_icao"].'</td>
-                <td>'.$leg["to_iata"].'</td>
                 <td>'.$leg["to_icao"].'</td>
                 <td>'.$leg["departure_date"].'</td>
                 '.$returnhtml.'
@@ -45,12 +63,13 @@ if ($result){
             </tr>
         ';
 
-        if ( isset($leg["departure_date"]) && $leg["departure_date"]!='' && $leg["departure_date"]!='undefined' ){
+        if ( isset($leg["departure_date"]) && $leg["departure_date"]!='' && $leg["departure_date"]!='undefined' && $prev_to_iata!=$leg["from_iata"] ){
             $legs .= $html;
         }
+        $prev_to_iata = $leg["to_iata"];
     }
 
-    if ( $_POST["active_tab"]=="pills-round-trip"){
+    if ( $_POST["active_tab"]=="pills-round-trip" ){
         $returnhtml = '<th>Return</th>';
     }else{
         $returnhtml = '';
@@ -83,12 +102,12 @@ if ($result){
     <h4>Inquiry Details:</h4>
     <table width="99%" border="1" cellpadding="0" cellspacing="0">
         <tr>
-           <th>Category:</th>
+           <th>Trip Type:</th>
            <th>Aircraft Type:</th>
            <th>Estimated Amount:</th>
         </tr>
         <tr>
-            <td>'.$_POST["active_tab"].'</td>
+            <td>'.get_active_tab( $_POST["active_tab"] ).'</td>
             <td>'.$_POST["aircraft"].'</td>
             <td>'.$_POST["total"].'</td>
         </tr>
@@ -98,9 +117,7 @@ if ($result){
     <h4>Charter Details:</h4>
     <table width="99%" border="1" cellpadding="0" cellspacing="0">
         <tr>
-           <th>From IATA</th>
            <th>From ICAO</th>
-           <th>To IATA</th>
            <th>To ICAO</th>
            <th>Departure</th>
            '.$returnhtml.'
@@ -119,5 +136,6 @@ $headers = array('Content-Type: text/html; charset=UTF-8');
 wp_mail( $to, $subject, $message, $headers );
 
 echo ("Inquiry sent to:".$send_email);
+echo ($message);
 ?>
 
