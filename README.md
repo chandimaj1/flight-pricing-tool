@@ -5,58 +5,41 @@
 
 ## Content
 - [Introduction](#introduction)
-    - Plugin Features
-    - Basic plugin architecture
-    - Dependencies, Libraries ans Third-party Scripts
-    - File Structure
-    - Database Structure
 
 - [How to Install](#how-to-install)
-    - Install with Github Clone Repository
-    - Manual Installation
-    - Plugin Activation
-    - Plugin Deactivation
-    - Adding front page shortcode
 
 - [How to Uninstall](#how-to-uninstall)
-    - Uninstalling plugin with wordpress
-    - Manual Uninstalling
 
 - [Settings Page](#settings-page)
-    - Settings Page Layout
-    - Main Functions
-        - Category Selection
-        - Add new record (table row)
-        - Save added / edited record
-        - Delete selected record
-        - Edit selected record
-        - Bulk adding records from CSV File
-    - Data Manipulating Functions
-        - Data Filters
-        - Search
-        - Pagination
 
 - [Front Page](#how-to-uninstall)
-    - Using shortcodes
-    - Using Filters
-    - Using Pagination
-    - Using Search Parameters
-
+    
 - [Modifying Plugin Functions](#how-to-uninstall)
-    - Styling on Admin Settings page
-    - Styling on Front pages
-
+    
 - [Custom Styling](#how-to-uninstall)
-    - Styling on Admin Settings page
-    - Styling on Front pages
-
+    
 <br>
 <br>
 
 # Introduction
+## Velox Jets Price Calculating Tool
+
+This plugin is owned by Velox Jets for calculating distances, flight times and fares for private charter airplanes.
+
 # How To Install
+Download or Clone this Repository
+1. and save it in your wordpress plugins folder (`__Path to your wordpress site__/wp-content/plugins/`)
+2. or upload the plugin via wordpress plugins uploader
+(__Wordpress Admin Dashboard -> Plugins -> Add New -> Upload__)
+
 # How To Uninstall
+
+__Goto wordpress admin dashboard -> plugins -> Flight Booking -> Deactivate -> Delete__
+
 # Settings Page
+
+__Goto wordpress admin dashboard -> plugins -> Flight Booking -> Settings__
+
 # Front Pages
-# Modifying Plugin Functions
-# Custom Styling
+
+__Use shortcode `[flightbook]`__ in the section of the page you want the plugin to be used.

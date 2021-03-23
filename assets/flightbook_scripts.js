@@ -895,9 +895,29 @@ function search_for_aircrafts(){
               //Multi Leg
               }else if (search_selection.active_tab=='pills-multi-leg'){
                 
+                //leg rows in input tab (pill)
+                let input_rows = [];
+                $('#pills-multi-leg .leg_row').each(function(){
+                  let from_icao = $(this).find('.leg_from').attr('selected_icao');
+                  let to_icao = $(this).find('.leg_to').attr('selected_icao');
+                  input_rows.push(from_icao+to_icao);
+                });
+
+                console.log("input_rows");
+                console.log(input_rows);
+
                 let no_of_legs = data.legs.length;
+
                 for (i=0; i<no_of_legs; i++){
-                  legs_html += get_leg_html(search_selection.legs, item, data, i);
+                  let from_to_icao = search_selection.legs[i].from_icao+search_selection.legs[i].to_icao;
+                  console.log("from to icao:"+from_to_icao);
+                  console.log('found in array at'+input_rows.indexOf(from_to_icao));
+
+                  if( input_rows.indexOf(from_to_icao)>=0 ){
+                    legs_html += get_leg_html(search_selection.legs, item, data, i);
+                  }else{
+                    continue;
+                  }
                 }
               
               }
@@ -1109,6 +1129,7 @@ function search_for_aircrafts(){
       var previous_leg_to_gmt;
 
       function get_leg_html(legs, item, data, leg_index){
+
         let leg = legs[leg_index];
 
             let distance = parseFloat(data.legs[leg_index].distance_nm);
@@ -1335,6 +1356,7 @@ function search_for_aircrafts(){
         };
 
         //Additional leg row if injected before for multi leg select
+        /*
         if (active_tab=="pills-multi-leg" && i>0){
           let previous_index = i - 1;
           let intermediate_leg = {
@@ -1344,17 +1366,20 @@ function search_for_aircrafts(){
             to_iata : $(this).find('.leg_from').val(),
             to_icao : $(this).find('.leg_from').attr('selected_icao'),
             to_gmt : $(this).find('.leg_from').attr('selected_gmt'),
-            departure_date : legs[previous_index].return_date,
-            return_date : return_date,
+            departure_date : legs[previous_index].departure_date,
+            //return_date : return_date,
             pax : legs[previous_index].pax
           };
           legs[i]=intermediate_leg;
           legs[i+1]=leg;
           i = i+2;
         }else{
+          */
           legs[i]=leg;
           i = i+1;
+          /*
         }
+        */
       });
       
   

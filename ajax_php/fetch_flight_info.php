@@ -33,7 +33,7 @@ if ($active_tab=='pills-multi-leg'){
       $previousi = $i-1;
       if ( $_POST["legs"][$i]["from_icao"] !=  $_POST["legs"][$previousi]["to_icao"]){
         $route .= '-'.$_POST["legs"][$i]["from_icao"].'-'.$_POST["legs"][$i]["to_icao"];  
-      }else{
+      }else if( isset($_POST["legs"][$i]["to_icao"]) ){
         $route .= '-'.$_POST["legs"][$i]["to_icao"];  
       }
     }

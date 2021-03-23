@@ -17,7 +17,7 @@ if ($result){
     $send_email = 'charter@veloxaircharter.com';
 }
 
-//var_dump($_POST);
+var_dump($_POST);
 //$send_email = 'chandima@axawebs.com';
 
 function get_active_tab($tab){
@@ -46,6 +46,7 @@ function get_active_tab($tab){
 
     $prev_to_iata = '';
     $legs = '';
+    
     foreach ($_POST["legs"] as $leg){
         
         $returnhtml = '';
@@ -63,9 +64,9 @@ function get_active_tab($tab){
             </tr>
         ';
 
-        if ( isset($leg["departure_date"]) && $leg["departure_date"]!='' && $leg["departure_date"]!='undefined' && $prev_to_iata!=$leg["from_iata"] ){
+        //if ( isset($leg["departure_date"]) && $leg["departure_date"]!='' && $leg["departure_date"]!='undefined' && $prev_to_iata!=$leg["from_iata"] ){
             $legs .= $html;
-        }
+        //}
         $prev_to_iata = $leg["to_iata"];
     }
 
