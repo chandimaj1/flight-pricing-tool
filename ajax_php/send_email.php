@@ -17,7 +17,7 @@ if ($result){
     $send_email = 'charter@veloxaircharter.com';
 }
 
-var_dump($_POST);
+//var_dump($_POST);
 //$send_email = 'chandima@axawebs.com';
 
 function get_active_tab($tab){
@@ -137,6 +137,6 @@ $headers = array('Content-Type: text/html; charset=UTF-8');
 wp_mail( $to, $subject, $message, $headers );
 
 echo ("Inquiry sent to:".$send_email);
-echo ($message);
+//echo ($message);
 ?>
 

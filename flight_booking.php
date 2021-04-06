@@ -6,8 +6,8 @@
  /* 
  Plugin Name: Flight Booking
  Plugin URI: https://github.com/axawebs/flightbooking
- Description: Custom created FlightBooking plugin for VeloxAirCharter on Wordpress
- Version: 1.0
+ Description: Custom created Price Calculating Tool for VeloxJets on Wordpress
+ Version: 2.0
  Author: Chandima Jayasiri
  Author URI: mailto:chandimaj@icloud.com
  License: GPLV2 or later
@@ -66,7 +66,8 @@ class flightBook
 
 
     function add_admin_pages(){
-        add_menu_page( 'FlightBook Plugin - Settings', 'FlightBook', 'manage_options', 'flightbook_settings', array($this,'admin_index'), 'dashicons-list-view', 100);
+        add_menu_page( 'FlightBook Plugin - Settings', 'FlightBook - Settings', 'manage_options', 'flightbook_settings', array($this,'admin_index'), 'dashicons-list-view', 100);
+        add_menu_page( 'FlightBook Plugin - Airports Table', 'FlightBook - Airports', 'manage_options', 'flightbook_airports_settings', array($this,'admin_airports'), 'dashicons-list-view', 101);
     }    
 
     function admin_index(){
@@ -74,11 +75,17 @@ class flightBook
         require_once plugin_dir_path( __FILE__ ) . 'templates/admin.php';
     }
 
+    function admin_airports(){
+        require_once plugin_dir_path( __FILE__ ) . 'templates/airports.php';
+    }
+
 
     function settings_link($links){
         //add custom setting link
-        $settings_link = '<a href="admin.php?page=flightbook_settings">Settings Page</a>';
+        $settings_link = '<a href="admin.php?page=flightbook_settings">Plugin Settings</a>';
+        $airports_settings_link = '<a href="admin.php?page=flightbook_airports_settings">Airports Settings</a>';
         array_push ( $links, $settings_link );
+        array_push ( $links, $airports_settings_link );
         return $links;
     }
 
@@ -157,7 +164,7 @@ class flightBook
             fixer_api_host VARCHAR(200),
             PRIMARY KEY (id))';
             $sql_insert = "INSERT INTO $table_name
-            VALUES (1,'charter@veloxaircharter.com','0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb','greatcirclemapper.p.rapidapi.com','1495fc83ad76e1ecfdd2e8773e9af9a2','http://data.fixer.io/api/latest')";
+            VALUES (1,'charter@veloxaircharter.com','0dade7188emsh9333ccd18ebfa18p1df4a7jsn3e15a17341bb','greatcirclemapper.p.rapidapi.com','d51f7a015cbefc69520b41c2c2ca0803','http://data.fixer.io/api/latest')";
             require_once(ABSPATH.'wp-admin/includes/upgrade.php');
             dbDelta($sql);
             dbDelta($sql_insert);
@@ -260,6 +267,18 @@ class flightBook
             //Select2
             wp_enqueue_style( 'flightbook_select2_styles', plugins_url('/assets/select2/select2.css',__FILE__));
             wp_enqueue_script( 'flightbook_select2_scripts', plugins_url('/assets/select2/select2.full.js',__FILE__), array('jquery'));
+        
+        }else if (strpos($hook_suffix, 'flightbook_airports_settings') !== false) {
+            //Bootstrap
+            wp_enqueue_style( 'bootstrap4_styles', plugins_url('/assets/bootstrap4/bootstrap_4_5_2_min.css',__FILE__));
+            wp_enqueue_script( 'bootstrap4_scripts', plugins_url('/assets/bootstrap4/bootstrap_4_5_2_min.js',__FILE__), array('jquery'));
+            //Font-Awesome
+            wp_enqueue_style( 'fontawesome_css', plugins_url('/assets/font_awesome/css/font-awesome.css',__FILE__));
+            //Admin scripts and styles
+            wp_enqueue_style( 'flightbook_admin_styles', plugins_url('/assets/flightbook_admin_style.css',__FILE__));
+            //Airports Scripts & Styles
+            wp_enqueue_style( 'flightbook_airports_admin_styles', plugins_url('/assets/flightbook_airports_admin_style.css',__FILE__));
+            wp_enqueue_script( 'flightbook_airports_admin_script', plugins_url('/assets/flightbook_airports_admin_scripts.js',__FILE__), array('bootstrap4_scripts','jquery'));
         }
     }
 

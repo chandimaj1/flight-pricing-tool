@@ -1,0 +1,49 @@
+.airports_row input{
+    pointer-events: none;
+    background-color: #eee;
+}
+
+.records_actions{
+    background-color: #eee;
+    padding: 20px 5px;
+}
+.width-50{
+    width: 49%;
+    margin: .5%;
+    float: left;
+}
+
+.ap_status .btn{
+    pointer-events: none;
+    display: none;
+}
+    .ap_status.status_at_1 .btn-success{
+        display: block;
+    }
+    .ap_status.status_at_0 .btn-danger{
+        display: block;
+    }
+
+.ap_actions .ap_img_save,
+.ap_actions .ap_img_cancel{
+    display: none;
+}
+    .airports_row.editing_airports_row .ap_img_edit{
+        display: none;
+    }
+    .airports_row.editing_airports_row .ap_img_save,
+    .airports_row.editing_airports_row .ap_img_cancel{
+        display: block;
+    }
+
+.airports_row.editing_airports_row{
+    background-color: #c66 !important;
+}
+    .airports_row.editing_airports_row input{
+        background-color: #fff;
+        pointer-events: auto;
+    }
+    .airports_row.editing_airports_row .ap_status .btn{
+        pointer-events: auto;
+    }
+
