@@ -305,8 +305,8 @@ class flightBook
          wp_enqueue_style( 'flightbook_select2_styles', plugins_url('/assets/select2/select2.css',__FILE__),98);
          wp_enqueue_script( 'flightbook_select2_scripts', plugins_url('/assets/select2/select2.full.js',__FILE__), array('jquery'));
          //Fuse
-         wp_enqueue_script( 'airports_scripts', plugins_url('/assets/fuse.js/airports.js',__FILE__));
-         wp_enqueue_script( 'fuse_scripts', plugins_url('/assets/fuse.js/fuse.js',__FILE__), array('airports_scripts'));
+        // wp_enqueue_script( 'airports_scripts', plugins_url('/assets/fuse.js/airports.js',__FILE__));
+         wp_enqueue_script( 'fuse_scripts', plugins_url('/assets/fuse.js/fuse.js',__FILE__), array('jquery'));
          //DateJS
          wp_enqueue_script( 'flightbook_momentjs', plugins_url('/assets/momentjs/momentjs.js',__FILE__), array('jquery'));
          //Custom

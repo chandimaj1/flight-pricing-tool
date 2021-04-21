@@ -174,16 +174,22 @@ function ui_functions(){
       let current_row_from_iata = current_row.find('.leg_from').val();
       let current_row_from_icao = current_row.find('.leg_from').attr('selected_icao');
       let current_row_from_gmt = current_row.find('.leg_from').attr('selected_gmt');
+      let current_row_from_rowid = current_row.find('.leg_from').attr('selected_row_id');
+
       let current_row_to_iata = current_row.find('.leg_to').val();
       let current_row_to_icao = current_row.find('.leg_to').attr('selected_icao');
       let current_row_to_gmt = current_row.find('.leg_to').attr('selected_gmt');
+      let current_row_to_rowid = current_row.find('.leg_to').attr('selected_row_id');
       //Setting Values
       current_row.find('.leg_from').val(current_row_to_iata);
       current_row.find('.leg_from').attr('selected_icao',current_row_to_icao);
       current_row.find('.leg_from').attr('selected_gmt',current_row_to_gmt);
+      current_row.find('.leg_from').attr('selected_row_id',current_row_to_rowid);
+      
       current_row.find('.leg_to').val(current_row_from_iata);
       current_row.find('.leg_to').attr('selected_icao',current_row_from_icao);
       current_row.find('.leg_to').attr('selected_gmt',current_row_from_gmt);
+      current_row.find('.leg_to').attr('selected_row_id',current_row_from_rowid);
   });
 
   //Tooltip Settings
@@ -314,22 +320,35 @@ function ui_functions(){
  */
 function autocomplete_js(){
 
-  var airports = window.airports.airportsByCities;
+  var airports = window.airports_new;
+  console.log(airports);
 
   var options = {
       shouldSort: true,
       threshold: 0.4,
-      maxPatternLength: 32,
-      keys: [{
-        name: 'codeIataAirport',
-        weight: 0.2
-      }, {
-        name: 'nameAirport',
-        weight: 0.4
-      }, {
-        name: 'nameCountry',
-        weight: 0.4
-      }]
+      maxPatternLength: 20,
+      keys: [
+        {
+          name: 'airport_iata',
+          weight: 0.2
+        },
+        {
+          name: 'airport_icao',
+          weight: 0.1
+        }, 
+        {
+          name: 'airport_name',
+          weight: 0.3
+        },
+        {
+          name: 'airport_city',
+          weight: 0.2
+        }, 
+        {
+          name: 'country_name',
+          weight: 0.2
+        }
+      ]
     };
     
   var fuse = new Fuse(airports, options);
@@ -394,9 +413,10 @@ function autocomplete_js(){
         //console.log(results[index].codeIataAirport);
         clearResults();
       }else if ( (results.length >= index + 1) && !use_ajax ) { //For fuse
-        ac.val(results[index].item.codeIataAirport);
-        ac.attr('selected_icao', results[index].item.codeIcaoAirport);
-        ac.attr('selected_gmt', results[index].item["GMT"]);
+        ac.val(results[index].item.airport_iata+'('+results[index].item.airport_icao+')');
+        ac.attr('selected_icao', results[index].item.airport_icao);
+        ac.attr('selected_gmt', results[index].item.gmt);
+        ac.attr('selected_row_id', results[index].item.id);
         
       }
 
@@ -569,10 +589,15 @@ function autocomplete_js(){
         }
 
         var divs = results.map(function(r, i) {
-          if ( typeof r.item.codeIcaoAirport !== 'undefined' && r.item.codeIcaoAirport != ''){ // show only results with icao
-            return '<div class="autocomplete-result" data-index="'+ i +'">'
-              + '<div><b>'+ r.item.codeIataAirport +', <span class="icaocode">'+ r.item.codeIcaoAirport+'</span></b> - '+ r.item.nameAirport +'</div>'
-              + '<div class="autocomplete-location">'+ r.item.codeIso2Country +', '+ r.item.nameCountry +'</div>'
+          if ( 
+            (typeof r.item.latitude !== 'undefined' && r.item.latitude != '') ||
+            (typeof r.item.longitude !== 'undefined' && r.item.longitude != '') 
+          ){ // show only results with latitudes and longitudes
+            return '<div class="autocomplete-result" data-index="'+ i +'" >'
+              + '<div><b>'+ r.item.airport_name +'</b></div>'
+              + '<div><span class="iatacode">'+ r.item.airport_iata +'</span>, <span class="icaocode">'+ r.item.airport_icao+'</span></div>'
+              + '<div><b>'+r.item.airport_city+'</b></div>'
+              + '<div class="autocomplete-location">'+ r.item.country_name +' ('+r.item.country_code+')'+'</div>'
               + '</div>';
             } 
           });
@@ -677,9 +702,11 @@ function search_for_aircrafts(){
         let leg = {
           from_iata : $(this).find('.leg_from').val(),
           from_icao : $(this).find('.leg_from').attr('selected_icao'),
+          from_id : $(this).find('.leg_from').attr('selected_row_id'),
           from_gmt : $(this).find('.leg_from').attr('selected_gmt'),
           to_iata : $(this).find('.leg_to').val(),
           to_icao : $(this).find('.leg_to').attr('selected_icao'),
+          to_id : $(this).find('.leg_to').attr('selected_row_id'),
           to_gmt : $(this).find('.leg_to').attr('selected_gmt'),
           departure_date : departure_date,
           return_date : return_date,
@@ -687,14 +714,17 @@ function search_for_aircrafts(){
         };
 
         //Additional leg row if injected before for multi leg select
+        /*
         if (active_tab=="pills-multi-leg" && i>0){
           let previous_index = i - 1;
           let intermediate_leg = {
             from_iata : legs[previous_index].to_iata,
             from_icao : legs[previous_index].to_icao,
+            from_id : legs[previous_index].from_id,
             from_gmt : legs[previous_index].to_gmt,
             to_iata : $(this).find('.leg_from').val(),
             to_icao : $(this).find('.leg_from').attr('selected_icao'),
+            to_id : $(this).find('.leg_from').attr('selected_row_id'),
             to_gmt : $(this).find('.leg_from').attr('selected_gmt'),
             departure_date : legs[previous_index].return_date,
             return_date : return_date,
@@ -707,6 +737,9 @@ function search_for_aircrafts(){
           legs[i]=leg;
           i = i+1;
         }
+        */
+        legs[i]=leg;
+        i = i+1;
       });
       
   
@@ -767,7 +800,7 @@ function search_for_aircrafts(){
    });
 
    $('#'+active_tab+' select').each(function(index, item){
-    if ( $(this).val()<=1 || $(this).val() == '' || typeof $(this).val() === 'undefined' ){
+    if ( $(this).val()<=0 || $(this).val() == '' || typeof $(this).val() === 'undefined' ){
        $(this).closest('.field').addClass('redfont');
        validation = false;
     }else{
@@ -895,6 +928,14 @@ function search_for_aircrafts(){
               //Multi Leg
               }else if (search_selection.active_tab=='pills-multi-leg'){
                 
+                let no_of_legs = data.legs.length;
+
+                let i = 0;
+                $('#pills-multi-leg .leg_row').each(function(){
+                  legs_html += get_leg_html(search_selection.legs, item, data, i);
+                  i++;
+                });
+                /*
                 //leg rows in input tab (pill)
                 let input_rows = [];
                 $('#pills-multi-leg .leg_row').each(function(){
@@ -919,6 +960,7 @@ function search_for_aircrafts(){
                     continue;
                   }
                 }
+                */
               
               }
 

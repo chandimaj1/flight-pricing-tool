@@ -58,7 +58,11 @@ if (! defined( 'ABSPATH') ){
         $languages = json_encode("{message:'error'}");
     }
 
-
+    //Getting airports
+    $table_airports_name = $wpdb->prefix."flightbook_airports";
+    $sql_airports = "SELECT * FROM $table_airports_name WHERE status=1";
+    $result_airports = $wpdb->get_results( $sql_airports );
+    $result_airports = json_encode($result_airports);
 //Normal Leg row template
 $leg_row_normal = '
 <div class="row no-gutters leg_row">
@@ -494,6 +498,7 @@ $legs_time_template = '
         var aircrafts = <?= $aircrafts ?>;
         var ac_lang = <?= $languages ?>;
         var theme = <?= $theme ?>;
+        var airports_new = <?= $result_airports ?>;
         console.log(theme);
         /**
          * Setting theme values on elements
@@ -588,7 +593,7 @@ $legs_time_template = '
                         <li><a class='uae' ac_lang="uae" ><i data-toggle="tooltip" data-placement="top" title="UAE"> <img src="<?= $plugin_url ?>assets/images/UAE-flag.png" alt="" /> </i> </a></li>
                         <li><a class='andorra'ac_lang="andorra" ><i data-toggle="tooltip" data-placement="top" title="Andorra"> <img src="<?= $plugin_url ?>assets/images/andorra-flag.png" alt="" /> </i> </a></li>
                         -->
-                        <li><a class='portugese'ac_lang="portugese" ><i data-toggle="tooltip" data-placement="top" title="Portugese"> <img src="<?= $plugin_url ?>assets/images/portugese.png" alt="" /> </i> </a></li>
+                        <li><a class='portugese'ac_lang="portuguese" ><i data-toggle="tooltip" data-placement="top" title="Portuguese"> <img src="<?= $plugin_url ?>assets/images/portugese.png" alt="" /> </i> </a></li>
                         <li><a class='spannish'ac_lang="spannish" ><i data-toggle="tooltip" data-placement="top" title="Spannish"> <img src="<?= $plugin_url ?>assets/images/spannish.png" alt="" /> </i> </a></li>
                     </ul>
                     <div class="currency-dropdown col-sm-5 col-xs-5">
